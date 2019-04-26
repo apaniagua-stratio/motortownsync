@@ -1,6 +1,5 @@
 package com.stratio.microservice.motortownsync.service;
 
-import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.stratio.microservice.motortownsync.entity.Producto;
 import com.stratio.microservice.motortownsync.repository.PostgresRepository;
 import com.stratio.microservice.motortownsync.repository.ProductosRepository;
@@ -9,22 +8,14 @@ import com.stratio.microservice.motortownsync.service.model.ServiceOutput;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static com.google.common.base.Predicates.not;
 
 @Slf4j
 @Service
@@ -110,6 +101,47 @@ public class ServiceImpl implements com.stratio.microservice.motortownsync.servi
 
   }
 
+  @Override
+  public String writeProductsDiffToSftp() {
+
+    List<String> rows = repo.getProductoCsv();
+    log.info("AURGI: POSTGRES read " + rows.size() + " rows.");
+
+    SftpWriter writer = new SftpWriter();
+
+    Date date = new Date();
+    Timestamp ts=new Timestamp(date.getTime());
+    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+    String fecha= formatter.format(ts);
+
+    String lastFile = writer.getLastFilenameFromSftp(sftpuser, sftphost, sftpkey,sftpoutfolder);
+    String filename = sftpoutfolder + "magento_csv_products_" + fecha + ".csv";
+    String filenameDiff = sftpoutfolder + "magento_csv_products_" + fecha + "_DIFF.csv";
+
+    boolean resul = writer.writeCsvFileToSftp(sftpuser, sftphost, sftpkey, rows, filename);
+    log.info("AURGI write file: " + filename + " to stfp file: " + resul);
+
+
+    List<String> lastrows = writer.readCsvFileFromSftp(sftpuser, sftphost, sftpkey,sftpoutfolder + lastFile);
+    log.info("AURGI: SFTP read rows " + lastrows.size() + " from  previoues file" );
+
+    //TODO: use replace all if more dependencies are needed
+
+
+    if (lastrows.size() > 0) {
+
+      List<String> diffrows = rows.stream()
+            .filter(not(new HashSet<>(lastrows)::contains))
+            .collect(Collectors.toList());
+
+          writer.writeCsvFileToSftp(sftpuser, sftphost, sftpkey, diffrows, filenameDiff);
+      log.info("AURGI write file: " + filenameDiff + " to stfp file: " + resul);
+    }
+
+
+    return "AURGI SFTP File " + filenameDiff + " written: " + resul ;
+
+  }
 
 
 

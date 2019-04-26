@@ -94,13 +94,15 @@ public class Controller implements POSTEndpointOfTheMicroserviceApi {
   }
 
 
-  @RequestMapping(value = "/sftpresult",
+  @RequestMapping(value = "/sftpdiff",
           produces = { "application/json" },
           method = RequestMethod.GET)
-  public String getProductsWritten()
+  public String getProductsDiff()
           throws Exception {
 
-    return service.writeProductsToSftp();
+
+    return service.writeProductsDiffToSftp();
+
 
   }
 
