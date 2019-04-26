@@ -1,0 +1,30 @@
+swagger:
+  enabled: false
+  info:
+    title: stratio- Microservice API
+    description: stratio- Microservice API Description
+    version: v1
+
+
+logging:
+  level:
+    root: INFO
+    org.springframework: INFO
+    org.hibernate: WARN
+    org.apache: WARN
+    org.eclipse: WARN
+    com.netflix: INFO
+
+spring:
+  datasource:
+    url: jdbc:postgresql://poolpostgrestls.anjana.local:10234/postgres?user=motortown_sync&prepareThreshold=0&ssl=true&sslmode=verify-ca&sslcert=/data/stratio/motortown_sync.pem&sslrootcert=/data/stratio/ca-bundle.pem&sslkey=/data/stratio/motortown_sync.key.pk8&loginTimeout=60
+    username: motortown_sync
+    password:
+
+sftphost: 10.20.1.112
+sftpuser: motortown_watcher
+productsfile: anjana/in/motortown_productos_servicios.csv
+stockfile: anjana/in/motortown_stock_por_centro.csv
+pricatfile: anjana/in/pricat_ctop.csv
+sftpkey: /home/apaniagua/.ssh/id_rsa
+sftpoutfolder: /anjana/motortown_pro/ingesta_productos_stock/procesado/

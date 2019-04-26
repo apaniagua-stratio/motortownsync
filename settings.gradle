@@ -1,0 +1,9 @@
+rootProject.name = 'motortownsync'
+include 'motortownsync-api'
+include 'motortownsync-service'
+
+rootProject.children.each { child ->
+  child.buildFileName = "${child.name}.gradle"
+}
+
+enableFeaturePreview("IMPROVED_POM_SUPPORT")
