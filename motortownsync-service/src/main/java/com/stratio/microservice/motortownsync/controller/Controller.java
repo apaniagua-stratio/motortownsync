@@ -57,6 +57,7 @@ public class Controller implements POSTEndpointOfTheMicroserviceApi {
     this.requestMapper = requestMapper;
     this.responseMapper = responseMapper;
 
+    log.info("AURGI MOTORTOWNSYNC version " + serviceId);
 
   }
 
@@ -97,12 +98,18 @@ public class Controller implements POSTEndpointOfTheMicroserviceApi {
   @RequestMapping(value = "/sftpdiff",
           produces = { "application/json" },
           method = RequestMethod.GET)
-  public String getProductsDiff()
+  public ResponseEntity<MicroserviceResponse> getProductsDiff()
           throws Exception {
 
+log.info("AURGI sftpdiff GET received");
 
-    return service.writeProductsDiffToSftp();
+    service.writeProductsDiffToSftp();
 
+    ServiceOutput output = new ServiceOutput("service.writeProductsDiffToSftp");
+
+    MicroserviceResponse result = responseMapper.mapOutput(output);
+
+    return new ResponseEntity<>(result, HttpStatus.OK);
 
   }
 

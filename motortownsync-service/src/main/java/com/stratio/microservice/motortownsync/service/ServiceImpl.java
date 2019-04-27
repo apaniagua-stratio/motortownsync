@@ -121,25 +121,25 @@ public class ServiceImpl implements com.stratio.microservice.motortownsync.servi
     boolean resul = writer.writeCsvFileToSftp(sftpuser, sftphost, sftpkey, rows, filename);
     log.info("AURGI write file: " + filename + " to stfp file: " + resul);
 
-
-    List<String> lastrows = writer.readCsvFileFromSftp(sftpuser, sftphost, sftpkey,sftpoutfolder + lastFile);
-    log.info("AURGI: SFTP read rows " + lastrows.size() + " from  previoues file" );
-
     //TODO: use replace all if more dependencies are needed
+    boolean resuldiff=false;
 
+    if (!lastFile.isEmpty()) {
 
-    if (lastrows.size() > 0) {
+      List<String> lastrows = writer.readCsvFileFromSftp(sftpuser, sftphost, sftpkey,sftpoutfolder + lastFile);
+
+      log.info("AURGI: SFTP read rows " + lastrows.size() + " from  previoues file" );
 
       List<String> diffrows = rows.stream()
             .filter(not(new HashSet<>(lastrows)::contains))
             .collect(Collectors.toList());
 
-          writer.writeCsvFileToSftp(sftpuser, sftphost, sftpkey, diffrows, filenameDiff);
-      log.info("AURGI write file: " + filenameDiff + " to stfp file: " + resul);
+      resuldiff= writer.writeCsvFileToSftp(sftpuser, sftphost, sftpkey, diffrows, filenameDiff);
+      log.info("AURGI write file: " + filenameDiff + " to stfp file: " + resuldiff);
     }
 
 
-    return "AURGI SFTP File " + filenameDiff + " written: " + resul ;
+    return "AURGI SFTP File " + filenameDiff + " written: " + resuldiff ;
 
   }
 

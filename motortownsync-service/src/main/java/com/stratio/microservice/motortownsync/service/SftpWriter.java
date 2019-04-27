@@ -65,7 +65,7 @@ public class SftpWriter {
         }
         catch(JSchException | SftpException | IOException e)
         {
-            System.out.println("AURGI: " + e);
+            log.error("AURGI: " + e);
         }
 
         return null;
@@ -104,11 +104,15 @@ public class SftpWriter {
             log.info("AURGI: SFTP Creating channel.");
             ChannelSftp sftpChannel = (ChannelSftp) session.openChannel("sftp");
             sftpChannel.connect();
+
             log.info("AURGI: SFTP Channel created.");
 
 
             String content = addProductsHeader() + "\n";
             Iterator<String> lisIterator = csvlines.iterator();
+
+            log.info("AURGI SFTP: will write " + csvlines.size() + " lines to file " + remoteFile);
+
 
             while (lisIterator.hasNext()) {
 
@@ -119,6 +123,7 @@ public class SftpWriter {
             sftpChannel.put (stream, remoteFile);
             log.info("AURGI: SFTP File put.");
 
+            stream.close();
             sftpChannel.disconnect();
             session.disconnect();
             log.info("AURGI: SFTP Channel and session closed.");
@@ -129,7 +134,7 @@ public class SftpWriter {
 
             return true;
         }
-        catch(JSchException | SftpException e)
+        catch(JSchException | IOException | SftpException e)
         {
             log.error("AURGI: " + e);
         }
