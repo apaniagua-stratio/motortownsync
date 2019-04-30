@@ -56,6 +56,8 @@ public class SftpWriter {
             {
                 strings.add(line);
             }
+
+            out.close();
             br.close();
             sftpChannel.disconnect();
             session.disconnect();
@@ -126,6 +128,9 @@ public class SftpWriter {
             stream.close();
             sftpChannel.disconnect();
             session.disconnect();
+            content="";
+            csvlines.clear();
+
             log.info("AURGI: SFTP Channel and session closed.");
 
 
@@ -205,6 +210,7 @@ public class SftpWriter {
 
             sftpChannel.exit();
             session.disconnect();
+
             log.info("AURGI: SFTP latest file currently is:" + oldestFile);
             log.info("AURGI: SFTP channell and session closed");
 

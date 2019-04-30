@@ -15,11 +15,14 @@ import com.stratio.microservice.motortownsync.service.mapper.ServiceRequestMappe
 import com.stratio.microservice.motortownsync.service.mapper.ServiceResponseMapper;
 import com.stratio.microservice.motortownsync.service.model.ServiceOutput;
 import javax.validation.Valid;
+
+import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -57,7 +60,7 @@ public class Controller implements POSTEndpointOfTheMicroserviceApi {
     this.requestMapper = requestMapper;
     this.responseMapper = responseMapper;
 
-    log.info("AURGI MOTORTOWNSYNC version " + serviceId);
+    log.info("AURGI MOTORTOWNSYNC version 0.7");
 
   }
 
@@ -98,18 +101,20 @@ public class Controller implements POSTEndpointOfTheMicroserviceApi {
   @RequestMapping(value = "/sftpdiff",
           produces = { "application/json" },
           method = RequestMethod.GET)
-  public ResponseEntity<MicroserviceResponse> getProductsDiff()
+  @Timed
+  @Transactional(timeout = 180)
+  public String getProductsDiff()
           throws Exception {
 
 log.info("AURGI sftpdiff GET received");
 
     service.writeProductsDiffToSftp();
 
-    ServiceOutput output = new ServiceOutput("service.writeProductsDiffToSftp");
+    //ServiceOutput output = new ServiceOutput("service.writeProductsDiffToSftp");
 
-    MicroserviceResponse result = responseMapper.mapOutput(output);
+    //MicroserviceResponse result = responseMapper.mapOutput(output);
 
-    return new ResponseEntity<>(result, HttpStatus.OK);
+    return "{\"result\":\"OK\"}";
 
   }
 

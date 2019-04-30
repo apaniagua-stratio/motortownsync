@@ -28,3 +28,5 @@ stockfile: anjana/in/motortown_stock_por_centro.csv
 pricatfile: anjana/in/pricat_ctop.csv
 sftpkey: /data/stratio/motortownwatcher.key
 sftpoutfolder: /anjana/motortown_pro/ingesta_productos_stock/procesado/
+schedulerRate: 1200000
+
