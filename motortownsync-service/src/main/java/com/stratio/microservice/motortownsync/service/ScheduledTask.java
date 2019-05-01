@@ -56,12 +56,11 @@ public class ScheduledTask {
         String filenameDiff = sftpoutfolder + "magento_csv_products_" + fecha + "_DIFF.csv";
 
 
-        boolean resul = writer.writeCsvFileToSftp(sftpuser, sftphost, sftpkey, rows, filename);
-        log.info("AURGI write file: " + filename + " to stfp file: " + resul);
+        //! boolean resul = writer.writeCsvFileToSftp(sftpuser, sftphost, sftpkey, rows, filename);
+        //! log.info("AURGI write file: " + filename + " to stfp file: " + resul);
 
         //TODO: split in files on 1000 records
 
-        /*
         int cont=0;
         List<String> contRows=new ArrayList<String>();
         while (cont < rows.size()) {
@@ -72,13 +71,19 @@ public class ScheduledTask {
             if (cont % 1000 == 0) {
                 String filenameCont = sftpoutfolder + "magento_csv_products_" + fecha + "_" + cont + ".csv";
                 System.out.println("cont size:" + contRows.size() + "contfile: " + filenameCont);
-                //boolean resulcont = writer.writeCsvFileToSftp(sftpuser, sftphost, sftpkey, contRows, filenameCont);
+                boolean resulcont = writer.writeCsvFileToSftp(sftpuser, sftphost, sftpkey, contRows, filenameCont);
+                log.info("AURGI write file: " + filenameCont + " to stfp file: " + resulcont);
+
                 contRows=new ArrayList<String>();
             }
         }
-        */
+        //write rest of rows
+        String filenameCont = sftpoutfolder + "magento_csv_products_" + fecha + "_END.csv";
+        boolean resulcont = writer.writeCsvFileToSftp(sftpuser, sftphost, sftpkey, contRows, filenameCont);
+        log.info("AURGI write file: " + filenameCont + " to stfp file: " + resulcont);
 
-            //TODO: use replace all if more dependencies are needed
+
+        //TODO: use replace all if more dependencies are needed
         boolean resuldiff = false;
 
         if (!lastFile.isEmpty()) {
@@ -95,5 +100,6 @@ public class ScheduledTask {
             log.info("AURGI write file: " + filenameDiff + " to stfp file: " + resuldiff);
 
         }
+        log.info("AURGI scheduled job end");
     }
 }
