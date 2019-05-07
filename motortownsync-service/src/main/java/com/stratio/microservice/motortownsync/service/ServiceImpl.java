@@ -69,7 +69,7 @@ public class ServiceImpl implements com.stratio.microservice.motortownsync.servi
 
     String filename = sftpoutfolder + "magento_csv_products_" + fecha + ".csv";
 
-    boolean resul = writer.writeCsvFileToSftp(sftpuser, sftphost, sftpkey, rows, filename);
+    boolean resul = writer.writeCsvFileToSftp(sftpuser, sftphost, sftpkey, rows, filename,"csv");
 
     log.info("AURGI write file: " + filename + " to stfp file: " + resul);
 
@@ -93,7 +93,7 @@ public class ServiceImpl implements com.stratio.microservice.motortownsync.servi
 
     String filename = sftpoutfolder + "magento_csv_products_" + fecha + ".csv";
 
-    boolean resul = writer.writeCsvFileToSftp(sftpuser, sftphost, sftpkey, rows, filename);
+    boolean resul = writer.writeCsvFileToSftp(sftpuser, sftphost, sftpkey, rows, filename,"csv");
 
     log.info("AURGI write file: " + filename + " to stfp file: " + resul);
 
@@ -118,7 +118,7 @@ public class ServiceImpl implements com.stratio.microservice.motortownsync.servi
     String filename = sftpoutfolder + "magento_csv_products_" + fecha + ".csv";
     String filenameDiff = sftpoutfolder + "magento_csv_products_" + fecha + "_DIFF.csv";
 
-    boolean resul = writer.writeCsvFileToSftp(sftpuser, sftphost, sftpkey, rows, filename);
+    boolean resul = writer.writeCsvFileToSftp(sftpuser, sftphost, sftpkey, rows, filename,"csv");
     log.info("AURGI write file: " + filename + " to stfp file: " + resul);
 
     //TODO: use replace all if more dependencies are needed
@@ -134,7 +134,7 @@ public class ServiceImpl implements com.stratio.microservice.motortownsync.servi
             .filter(not(new HashSet<>(lastrows)::contains))
             .collect(Collectors.toList());
 
-      resuldiff= writer.writeCsvFileToSftp(sftpuser, sftphost, sftpkey, diffrows, filenameDiff);
+      resuldiff= writer.writeCsvFileToSftp(sftpuser, sftphost, sftpkey, diffrows, filenameDiff,"csv");
       log.info("AURGI write file: " + filenameDiff + " to stfp file: " + resuldiff);
     }
 

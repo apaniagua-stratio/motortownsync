@@ -36,6 +36,12 @@ public class ScheduledTask {
     @Value("${sftpoutfolder}")
     private String sftpoutfolder;
 
+    @Value("${sftpoutputformat}")
+    private String sftpoutputformat;
+
+    @Value("${sftpsplitfiles}")
+    private String sftpsplitfiles;
+
 
     @Scheduled(fixedRateString = "${schedulerRate}")
     public void task()
@@ -52,38 +58,45 @@ public class ScheduledTask {
         String fecha = formatter.format(ts);
 
         String lastFile = writer.getLastFilenameFromSftp(sftpuser, sftphost, sftpkey, sftpoutfolder);
-        String filename = sftpoutfolder + "magento_csv_products_" + fecha + ".csv";
-        String filenameDiff = sftpoutfolder + "magento_csv_products_" + fecha + "_DIFF.csv";
+        String filename = sftpoutfolder + "magento_csv_products_" + fecha ;
+        String filenameDiff = sftpoutfolder + "magento_csv_products_" + fecha + "_DIFF";
 
 
-        //! boolean resul = writer.writeCsvFileToSftp(sftpuser, sftphost, sftpkey, rows, filename);
-        //! log.info("AURGI write file: " + filename + " to stfp file: " + resul);
+        //TODO: write total file
+        boolean resul = writer.writeCsvFileToSftp(sftpuser, sftphost, sftpkey, rows, filename,sftpoutputformat);
+        log.info("AURGI write file: " + filename + " zipper to stfp file: " + resul);
 
-        //TODO: split in files on 1000 records
 
-        int cont=0;
-        List<String> contRows=new ArrayList<String>();
-        while (cont < rows.size()) {
 
-            contRows.add(rows.get(cont));
-            cont++;
+        //TODO: split total  in files on 1000 records
 
-            if (cont % 1000 == 0) {
-                String filenameCont = sftpoutfolder + "magento_csv_products_" + fecha + "_" + cont + ".csv";
-                System.out.println("cont size:" + contRows.size() + "contfile: " + filenameCont);
-                boolean resulcont = writer.writeCsvFileToSftp(sftpuser, sftphost, sftpkey, contRows, filenameCont);
-                log.info("AURGI write file: " + filenameCont + " to stfp file: " + resulcont);
+        if (sftpsplitfiles.equalsIgnoreCase("true")) {
 
-                contRows=new ArrayList<String>();
+            int cont=0;
+            List<String> contRows=new ArrayList<String>();
+            while (cont < rows.size()) {
+
+                contRows.add(rows.get(cont));
+                cont++;
+
+                if (cont % 1000 == 0) {
+                    String filenameCont = sftpoutfolder + "magento_csv_products_" + fecha + "_" + cont + ".csv";
+                    System.out.println("cont size:" + contRows.size() + "contfile: " + filenameCont);
+                    boolean resulcont = writer.writeCsvFileToSftp(sftpuser, sftphost, sftpkey, contRows, filenameCont,sftpoutputformat);
+                    log.info("AURGI write file: " + filenameCont + " to stfp file: " + resulcont);
+
+                    contRows=new ArrayList<String>();
+                }
             }
+            //write rest of rows
+            String filenameCont = sftpoutfolder + "magento_csv_products_" + fecha + "_END.csv";
+            boolean resulcont = writer.writeCsvFileToSftp(sftpuser, sftphost, sftpkey, contRows, filenameCont,sftpoutputformat);
+            log.info("AURGI write file: " + filenameCont + " to stfp file: " + resulcont);
+
         }
-        //write rest of rows
-        String filenameCont = sftpoutfolder + "magento_csv_products_" + fecha + "_END.csv";
-        boolean resulcont = writer.writeCsvFileToSftp(sftpuser, sftphost, sftpkey, contRows, filenameCont);
-        log.info("AURGI write file: " + filenameCont + " to stfp file: " + resulcont);
 
 
-        //TODO: use replace all if more dependencies are needed
+        //TODO: write just the differences
         boolean resuldiff = false;
 
         if (!lastFile.isEmpty()) {
@@ -96,10 +109,11 @@ public class ScheduledTask {
                     .filter(not(new HashSet<>(lastrows)::contains))
                     .collect(Collectors.toList());
 
-            resuldiff = writer.writeCsvFileToSftp(sftpuser, sftphost, sftpkey, diffrows, filenameDiff);
+            resuldiff = writer.writeCsvFileToSftp(sftpuser, sftphost, sftpkey, diffrows, filenameDiff,sftpoutputformat);
             log.info("AURGI write file: " + filenameDiff + " to stfp file: " + resuldiff);
 
         }
+
         log.info("AURGI scheduled job end");
     }
 }
