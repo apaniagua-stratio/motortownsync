@@ -8,6 +8,7 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 public class ServiceImplTest {
 
     private ServiceImpl serv;
+    private final String var="";
 
     @Before
     public void setUp()
@@ -19,7 +20,8 @@ public class ServiceImplTest {
     public void fileListNotEmpty() {
 
         //assertThat(serv.listFilesInSftp("/anjana").size() > 0);
-        assertThat(true);
+        //assertThat(var.isEmpty());
+        assert(true);
 
     }
 

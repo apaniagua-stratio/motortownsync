@@ -29,4 +29,9 @@ public interface PostgresRepository extends Repository<Producto,Long> {
     )
     public List<String> getProductoCsv();
 
+    @Query(value = "SELECT csv FROM motortown.magentocsvstock;",
+            nativeQuery=true
+    )
+    public List<String> getStockCsv();
+
 }
