@@ -98,7 +98,7 @@ public class Controller implements POSTEndpointOfTheMicroserviceApi {
   }
 
 
-  @RequestMapping(value = "/sftpdiff",
+  @RequestMapping(value = "/productscsvfile",
           produces = { "application/json" },
           method = RequestMethod.GET)
   @Timed
@@ -106,9 +106,9 @@ public class Controller implements POSTEndpointOfTheMicroserviceApi {
   public String getProductsDiff()
           throws Exception {
 
-log.info("AURGI sftpdiff GET received");
+    log.info("AURGI GET received");
 
-    service.writeProductsDiffToSftp();
+    service.writeProductsToSftp();
 
     //ServiceOutput output = new ServiceOutput("service.writeProductsDiffToSftp");
 

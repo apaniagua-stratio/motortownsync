@@ -49,6 +49,10 @@ public class ScheduledTask {
     public void task()
     {
 
+        log.info("AURGI: Scheduled job start ");
+
+        /*
+
         List<String> rows = repo.getProductoCsv();
         log.info("AURGI: POSTGRES read " + rows.size() + " rows.");
 
@@ -128,6 +132,8 @@ public class ScheduledTask {
         resul = writer.writeCsvFileToSftp(sftpuser, sftphost, sftpkey, stockrows, stockfilename,"csv",addStockHeader());
         log.info("AURGI write file: " + filename + " zipper to stfp file: " + resul);
 
+
+         */
 
         log.info("AURGI scheduled job end");
     }

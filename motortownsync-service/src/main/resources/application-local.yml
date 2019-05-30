@@ -39,4 +39,8 @@ sftpsplitfiles: false
 sftpdifffiles: false
 
 server:
-  port: 8888
+  port: 8889
+
+management:
+    server:
+      port: 8092

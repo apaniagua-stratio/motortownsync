@@ -39,6 +39,9 @@ public class ServiceImpl implements com.stratio.microservice.motortownsync.servi
   @Value("${sftpoutfolder}")
   private String sftpoutfolder;
 
+  @Value("${sftpoutputformat}")
+  private String sftpoutputformat;
+
 
   @Override
   public ServiceOutput doSomething(ServiceInput input) {
@@ -52,6 +55,7 @@ public class ServiceImpl implements com.stratio.microservice.motortownsync.servi
 
   @Override
   public ServiceOutput writeProductsToSftp(ServiceInput input) {
+
 
     //SftpWriter writer = new SftpWriter();
     //boolean resul = writer.writeCsvFileToSftp(sftpuser,sftphost,sftpkey,csvlines,remotefile);
@@ -75,12 +79,33 @@ public class ServiceImpl implements com.stratio.microservice.motortownsync.servi
 
     return new ServiceOutput("file " + filename +  " written: " + resul );
 
+
+
   }
 
   @Override
   public String writeProductsToSftp() {
 
+    List<String> rows = repo.getProductoCsv();
+    log.info("AURGI: POSTGRES read " + rows.size() + " rows.");
 
+    SftpWriter writer = new SftpWriter();
+
+    Date date = new Date();
+    Timestamp ts = new Timestamp(date.getTime());
+    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+    String fecha = formatter.format(ts);
+
+    String lastFile = writer.getLastFilenameFromSftp(sftpuser, sftphost, sftpkey, sftpoutfolder);
+    String filename = sftpoutfolder + "magento_csv_products_" + fecha ;
+
+
+
+    //TODO: write total file
+    boolean resul = writer.writeCsvFileToSftp(sftpuser, sftphost, sftpkey, rows, filename,sftpoutputformat,addProductsHeader());
+    log.info("AURGI write file: " + filename + " " + sftpoutputformat + " to stfp file: " + resul);
+
+    /*
     List<String> rows = repo.getProductoCsv();
 
     SftpWriter writer = new SftpWriter();
@@ -97,6 +122,8 @@ public class ServiceImpl implements com.stratio.microservice.motortownsync.servi
 
     log.info("AURGI write file: " + filename + " to stfp file: " + resul);
 
+
+     */
     return "AURGI SFTP File " + filename +  " written: " + resul ;
 
   }
