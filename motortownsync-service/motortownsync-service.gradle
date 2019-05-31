@@ -53,6 +53,8 @@ dependencies {
   compile group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.0'
 // https://mvnrepository.com/artifact/org.javassist/javassist
   compile group: 'org.javassist', name: 'javassist', version: '3.23.1-GA'
+  // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
+  compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
   
   compile project(":motortownsync-api")
 
@@ -65,6 +67,7 @@ dependencies {
   compile "commons-io:commons-io:${commonsIoVersion}"
   compile "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${jacksonDataTypeVersion}"
   compile "org.springframework.cloud:spring-cloud-starter-sleuth:${sleuthVersion}"
+
 
   compile "io.springfox:springfox-swagger2:${swaggerVersion}"
   compile "io.springfox:springfox-swagger-ui:${swaggerVersion}"

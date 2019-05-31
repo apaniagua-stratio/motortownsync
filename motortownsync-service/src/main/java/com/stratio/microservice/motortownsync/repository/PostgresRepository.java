@@ -34,4 +34,14 @@ public interface PostgresRepository extends Repository<Producto,Long> {
     )
     public List<String> getStockCsv();
 
+    @Query(value = "SELECT max(originalfile) FROM motortown.magentocsvproducts;",
+            nativeQuery=true
+    )
+    public String getProductOriginalFile();
+
+    @Query(value = "SELECT max(originalfile) FROM motortown.magentocsvstock;",
+            nativeQuery=true
+    )
+    public String getStockOriginalFile();
+
 }

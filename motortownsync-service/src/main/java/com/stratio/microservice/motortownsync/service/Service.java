@@ -21,6 +21,8 @@ public interface Service {
 
   String writeProductsToSftp();
 
+  String writeStockToSftp();
+
   String writeProductsDiffToSftp();
 
  /*

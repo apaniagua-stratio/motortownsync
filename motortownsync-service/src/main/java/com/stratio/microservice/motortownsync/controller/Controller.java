@@ -108,13 +108,14 @@ public class Controller implements POSTEndpointOfTheMicroserviceApi {
 
     log.info("AURGI GET received");
 
-    service.writeProductsToSftp();
+    String productResult = service.writeProductsToSftp();
+    String stockResult = service.writeStockToSftp();
+
+    return productResult + "," + stockResult;
 
     //ServiceOutput output = new ServiceOutput("service.writeProductsDiffToSftp");
-
     //MicroserviceResponse result = responseMapper.mapOutput(output);
 
-    return "{\"result\":\"OK\"}";
 
   }
 
