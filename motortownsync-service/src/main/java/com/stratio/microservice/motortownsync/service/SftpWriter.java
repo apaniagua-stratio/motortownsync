@@ -1,14 +1,14 @@
 package com.stratio.microservice.motortownsync.service;
 
 import com.jcraft.jsch.*;
+import com.stratio.microservice.motortownsync.entity.CsvRow;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Vector;
+import java.util.*;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 @Slf4j
@@ -159,139 +159,6 @@ public class SftpWriter {
 
     }
 
-    public boolean writeZipFileToSftp(String user, String host, String sftpkey,List<String> csvlines, String remoteFile,String header)
-    {
-
-        int port=22;
-
-        //String remoteFile="sample.txt";
-
-        try
-        {
-            JSch jsch = new JSch();
-            Session session = jsch.getSession(user, host, port);
-
-
-            //TODO change before deploy (no passphrase)
-            //String privateKey = "/home/apaniagua/.ssh/id_rsa";
-
-            if (sftpkey.equalsIgnoreCase("/home/apaniagua/.ssh/id_rsa")) {
-                jsch.addIdentity(sftpkey,"MailSagApm17");
-            }
-            else {
-                jsch.addIdentity(sftpkey);
-            }
-
-            session.setConfig("StrictHostKeyChecking", "no");
-            log.info("AURGI: SFTP Establishing Connection..." + user + "@" + host + " with " + sftpkey);
-
-            session.connect();
-            log.info("AURGI: SFTP Connection established.");
-
-            log.info("AURGI: SFTP Creating channel.");
-            ChannelSftp sftpChannel = (ChannelSftp) session.openChannel("sftp");
-            sftpChannel.connect();
-
-            log.info("AURGI: SFTP Channel created.");
-
-
-            String content = header + "\n";
-            Iterator<String> lisIterator = csvlines.iterator();
-
-            log.info("AURGI SFTP: will write " + csvlines.size() + " lines to file " + remoteFile);
-
-
-            while (lisIterator.hasNext()) {
-
-                content += lisIterator.next() + "\n";
-            }
-
-            InputStream stream = new ByteArrayInputStream(content.getBytes ());
-
-            InputStream compressedStream=getCompressed(stream);
-
-            /*
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-
-            ZipOutputStream zipStream = new ZipOutputStream(bos);
-
-            ZipEntry entry = new ZipEntry("test3");
-            zipStream.putNextEntry(entry);
-
-            byte[] readBuffer = new byte[1024];
-            int amountRead;
-            int written = 0;
-
-            while ((amountRead = stream.read(readBuffer)) > 0) {
-                zipStream.write(readBuffer, 0, amountRead);
-                written += amountRead;
-            }
-
-            zipStream.closeEntry();
-            stream.close();
-            zipStream.close();
-
-            //zipStream.
-            InputStream streamfromzip=new InputStream(zipStream);
-
-             */
-
-
-            sftpChannel.put (compressedStream, "/anjana/motortown_pro/ingesta_productos_stock/test/test4.zip");
-
-
-            //--
-
-            //FileOutputStream fos = new FileOutputStream("test.zip");
-
-            /*
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ZipOutputStream zos = new ZipOutputStream(baos);
-            zos.putNextEntry(new ZipEntry(remoteFile));
-
-            int length;
-            byte[] buffer = new byte[1024];
-
-            while ((length = stream.read(buffer)) > 0) {
-                zos.write(buffer, 0, length);
-            }
-
-            zos.closeEntry();
-
-            //--
-
-            InputStream streamfromzip=new InputStream(baos.toByteArray());
-            streamfromzip.
-            sftpChannel.put (streamfromzip, "/anjana/motortown_pro/ingesta_productos_stock/test/test.zip");
-
-            */
-
-            log.info("AURGI: SFTP File put.");
-
-            //stream.close();
-            //zos.close();
-            //streamfromzip.close();
-
-            sftpChannel.disconnect();
-            session.disconnect();
-            content="";
-            csvlines.clear();
-
-            log.info("AURGI: SFTP Channel and session closed.");
-
-
-
-            return true;
-        }
-        catch(JSchException | IOException | SftpException e)
-        {
-            log.error("AURGI: " + e);
-        }
-
-        return false;
-
-    }
-
 
     public InputStream getCompressed( InputStream is )
             throws IOException
@@ -386,6 +253,89 @@ public class SftpWriter {
         return oldestFile;
     }
 
+
+    public List<CsvRow> rowsFromSftpZip(String user, String host, String sftpkey, String remoteZipFile)
+    {
+
+        int port=22;
+        List<CsvRow> rowsReaded = new ArrayList<>();
+
+        try
+        {
+            JSch jsch = new JSch();
+            Session session = jsch.getSession(user, host, port);
+
+
+            if (sftpkey.equalsIgnoreCase("/home/apaniagua/.ssh/id_rsa")) {
+                jsch.addIdentity(sftpkey,"MailSagApm17");
+            }
+            else {
+                jsch.addIdentity(sftpkey);
+            }
+
+            session.setConfig("StrictHostKeyChecking", "no");
+            log.info("AURGI: Establishing Connection..." + user + "@" + host + " with " + sftpkey);
+
+            session.connect();
+            log.info("AURGI: Connection established.");
+
+
+            log.info("AURGI: Creating SFTP Channel.");
+            ChannelSftp sftpChannel = (ChannelSftp) session.openChannel("sftp");
+            sftpChannel.connect();
+
+            log.info("AURGI: SFTP Reading zip file " + remoteZipFile);
+
+            List<InputStream> inputStreams = new ArrayList<>();
+            List<String> inputFilenames = new ArrayList<>();
+
+            try (ZipInputStream zipInputStream = new ZipInputStream(sftpChannel.get(remoteZipFile))) {
+
+                ZipEntry entry = zipInputStream.getNextEntry();
+
+                while (entry != null) {
+
+                    log.info("AURGI: Zip file contains this: " + entry.getName());
+
+                    InputStream in = convertToInputStream(zipInputStream);
+
+                    inputStreams.add(in);
+                    inputFilenames.add(entry.getName());
+
+                    Scanner scanner = new Scanner(in);
+                    while (scanner.hasNextLine()) {
+                        String line = scanner.nextLine();
+                        CsvRow row = new CsvRow(line, entry.getName(),remoteZipFile);
+                        rowsReaded.add(row);
+                    }
+
+                    zipInputStream.closeEntry();
+                    entry = zipInputStream.getNextEntry();
+                }
+            }
+
+            sftpChannel.disconnect();
+            log.info("AURGI: SFTP GET CHANNEL DISCONNECT");
+
+
+            return rowsReaded;
+        }
+
+
+        catch(JSchException | IOException | SftpException e)
+        {
+            log.error("AURGI: " + e);
+        }
+
+        return null;
+
+    }
+
+    private static InputStream convertToInputStream(final ZipInputStream inputStreamIn) throws IOException {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        IOUtils.copy(inputStreamIn, out);
+        return new ByteArrayInputStream(out.toByteArray());
+    }
 
 }
 

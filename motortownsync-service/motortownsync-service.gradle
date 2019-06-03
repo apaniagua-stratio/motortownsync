@@ -55,6 +55,9 @@ dependencies {
   compile group: 'org.javassist', name: 'javassist', version: '3.23.1-GA'
   // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
   compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
+  // https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient
+  compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.8'
+  
   
   compile project(":motortownsync-api")
 

@@ -1,15 +1,10 @@
 package com.stratio.microservice.motortownsync.controller;
 
-import static java.util.stream.Collectors.toList;
-
 import brave.Tracer;
 
-import com.stratio.microservice.motortownsync.entity.Producto;
 import com.stratio.microservice.motortownsync.generated.rest.api.POSTEndpointOfTheMicroserviceApi;
 import com.stratio.microservice.motortownsync.generated.rest.model.MicroserviceRequest;
 import com.stratio.microservice.motortownsync.generated.rest.model.MicroserviceResponse;
-import com.stratio.microservice.motortownsync.repository.PostgresRepository;
-import com.stratio.microservice.motortownsync.repository.ProductosRepository;
 import com.stratio.microservice.motortownsync.service.Service;
 import com.stratio.microservice.motortownsync.service.mapper.ServiceRequestMapper;
 import com.stratio.microservice.motortownsync.service.mapper.ServiceResponseMapper;
@@ -29,10 +24,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import io.swagger.annotations.ApiParam;
 
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @RestController
@@ -60,10 +51,11 @@ public class Controller implements POSTEndpointOfTheMicroserviceApi {
     this.requestMapper = requestMapper;
     this.responseMapper = responseMapper;
 
-    log.info("AURGI MOTORTOWNSYNC version 0.7");
+    log.info("AURGI MOTORTOWNSYNC version 0.8");
 
   }
 
+  /*
   @Override
   @RequestMapping(value = "/microservices",
       produces = { "application/json" },
@@ -79,6 +71,8 @@ public class Controller implements POSTEndpointOfTheMicroserviceApi {
       return new ResponseEntity<>(result, HttpStatus.OK);
 
   }
+  */
+
 
   @RequestMapping(value = "/sftpwriter",
           produces = { "application/json" },
@@ -97,6 +91,20 @@ public class Controller implements POSTEndpointOfTheMicroserviceApi {
 
   }
 
+  @RequestMapping(value = "/reprocess",
+          produces = { "application/json" },
+          consumes = { "application/json" },
+          method = RequestMethod.POST)
+  public ResponseEntity<MicroserviceResponse> reprocess(@ApiParam(value = "" ,required=false )  @Valid @RequestBody MicroserviceRequest body)
+          throws Exception {
+
+    ServiceOutput output = service.reprocess(requestMapper.mapInput(body));
+
+    MicroserviceResponse result = responseMapper.mapOutput(output);
+
+    return new ResponseEntity<>(result, HttpStatus.OK);
+
+  }
 
   @RequestMapping(value = "/productscsvfile",
           produces = { "application/json" },

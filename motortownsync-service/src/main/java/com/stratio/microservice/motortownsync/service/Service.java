@@ -9,7 +9,10 @@ import java.util.concurrent.CompletableFuture;
 
 public interface Service {
 
+  /*
   ServiceOutput doSomething(ServiceInput input);
+   */
+
 
   int numberOfProductos();
 
@@ -22,6 +25,8 @@ public interface Service {
   String writeProductsToSftp();
 
   String writeStockToSftp();
+
+  ServiceOutput reprocess(ServiceInput input);
 
   String writeProductsDiffToSftp();
 
