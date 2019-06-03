@@ -37,17 +37,17 @@ public class SftpWriter {
             }
 
             session.setConfig("StrictHostKeyChecking", "no");
-            log.info("AURGI: Establishing Connection..." + user + "@" + host + " with " + sftpkey);
+            log.info("MOTORTOWN: Establishing Connection..." + user + "@" + host + " with " + sftpkey);
 
             session.connect();
-            log.info("AURGI: Connection established.");
+            log.info("MOTORTOWN: Connection established.");
 
-            log.info("AURGI: Creating SFTP Channel.");
+            log.info("MOTORTOWN: Creating SFTP Channel.");
             ChannelSftp sftpChannel = (ChannelSftp) session.openChannel("sftp");
             sftpChannel.connect();
 
             InputStream out= null;
-            log.info("AURGI: SFTP Getting file " + remoteFile);
+            log.info("MOTORTOWN: SFTP Getting file " + remoteFile);
             out= sftpChannel.get(remoteFile);
             BufferedReader br = new BufferedReader(new InputStreamReader(out));
 
@@ -63,13 +63,13 @@ public class SftpWriter {
             br.close();
             sftpChannel.disconnect();
             session.disconnect();
-            log.info("AURGI: SFTP channell and session closed");
+            log.info("MOTORTOWN: SFTP channell and session closed");
 
             return strings;
         }
         catch(JSchException | SftpException | IOException e)
         {
-            log.error("AURGI: " + e);
+            log.error("MOTORTOWN: " + e);
         }
 
         return null;
@@ -100,22 +100,22 @@ public class SftpWriter {
             }
 
             session.setConfig("StrictHostKeyChecking", "no");
-            log.info("AURGI: SFTP Establishing Connection..." + user + "@" + host + " with " + sftpkey);
+            log.info("MOTORTOWN: SFTP Establishing Connection..." + user + "@" + host + " with " + sftpkey);
 
             session.connect();
-            log.info("AURGI: SFTP Connection established.");
+            log.info("MOTORTOWN: SFTP Connection established.");
 
-            log.info("AURGI: SFTP Creating channel.");
+            log.info("MOTORTOWN: SFTP Creating channel.");
             ChannelSftp sftpChannel = (ChannelSftp) session.openChannel("sftp");
             sftpChannel.connect();
 
-            log.info("AURGI: SFTP Channel created.");
+            log.info("MOTORTOWN: SFTP Channel created.");
 
 
             String content = header + "\n";
             Iterator<String> lisIterator = csvlines.iterator();
 
-            log.info("AURGI SFTP: will write " + csvlines.size() + " lines to file " + remoteFile);
+            log.info("MOTORTOWN SFTP: will write " + csvlines.size() + " lines to file " + remoteFile);
 
 
             while (lisIterator.hasNext()) {
@@ -134,7 +134,7 @@ public class SftpWriter {
             }
 
 
-            log.info("AURGI: SFTP File put.");
+            log.info("MOTORTOWN: SFTP File put.");
 
             stream.close();
             sftpChannel.disconnect();
@@ -142,7 +142,7 @@ public class SftpWriter {
             content="";
             csvlines.clear();
 
-            log.info("AURGI: SFTP Channel and session closed.");
+            log.info("MOTORTOWN: SFTP Channel and session closed.");
 
 
             //also write differences from last csv written
@@ -152,7 +152,7 @@ public class SftpWriter {
         }
         catch(JSchException | IOException | SftpException e)
         {
-            log.error("AURGI: " + e);
+            log.error("MOTORTOWN: " + e);
         }
 
         return false;
@@ -206,12 +206,12 @@ public class SftpWriter {
             }
 
             session.setConfig("StrictHostKeyChecking", "no");
-            log.info("AURGI: SFTP Establishing Connection..." + user + "@" + host + " with " + sftpkey);
+            log.info("MOTORTOWN: SFTP Establishing Connection..." + user + "@" + host + " with " + sftpkey);
 
             session.connect();
-            log.info("AURGI: SFTP Connection established.");
+            log.info("MOTORTOWN: SFTP Connection established.");
 
-            log.info("AURGI: SFTP Creating channel.");
+            log.info("MOTORTOWN: SFTP Creating channel.");
             ChannelSftp sftpChannel = (ChannelSftp) session.openChannel("sftp");
             sftpChannel.connect();
 
@@ -241,13 +241,13 @@ public class SftpWriter {
             sftpChannel.exit();
             session.disconnect();
 
-            log.info("AURGI: SFTP latest file currently is:" + oldestFile);
-            log.info("AURGI: SFTP channell and session closed");
+            log.info("MOTORTOWN: SFTP latest file currently is:" + oldestFile);
+            log.info("MOTORTOWN: SFTP channell and session closed");
 
         }
         catch(JSchException | SftpException e)
         {
-            log.error("AURGI: " + e);
+            log.error("MOTORTOWN: " + e);
         }
 
         return oldestFile;
@@ -274,17 +274,17 @@ public class SftpWriter {
             }
 
             session.setConfig("StrictHostKeyChecking", "no");
-            log.info("AURGI: Establishing Connection..." + user + "@" + host + " with " + sftpkey);
+            log.info("MOTORTOWN: Establishing Connection..." + user + "@" + host + " with " + sftpkey);
 
             session.connect();
-            log.info("AURGI: Connection established.");
+            log.info("MOTORTOWN: Connection established.");
 
 
-            log.info("AURGI: Creating SFTP Channel.");
+            log.info("MOTORTOWN: Creating SFTP Channel.");
             ChannelSftp sftpChannel = (ChannelSftp) session.openChannel("sftp");
             sftpChannel.connect();
 
-            log.info("AURGI: SFTP Reading zip file " + remoteZipFile);
+            log.info("MOTORTOWN: SFTP Reading zip file " + remoteZipFile);
 
             List<InputStream> inputStreams = new ArrayList<>();
             List<String> inputFilenames = new ArrayList<>();
@@ -295,7 +295,7 @@ public class SftpWriter {
 
                 while (entry != null) {
 
-                    log.info("AURGI: Zip file contains this: " + entry.getName());
+                    log.info("MOTORTOWN: Zip file contains this: " + entry.getName());
 
                     InputStream in = convertToInputStream(zipInputStream);
 
@@ -315,7 +315,7 @@ public class SftpWriter {
             }
 
             sftpChannel.disconnect();
-            log.info("AURGI: SFTP GET CHANNEL DISCONNECT");
+            log.info("MOTORTOWN: SFTP GET CHANNEL DISCONNECT");
 
 
             return rowsReaded;
@@ -324,7 +324,7 @@ public class SftpWriter {
 
         catch(JSchException | IOException | SftpException e)
         {
-            log.error("AURGI: " + e);
+            log.error("MOTORTOWN: " + e);
         }
 
         return null;

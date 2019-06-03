@@ -51,7 +51,7 @@ public class Controller implements POSTEndpointOfTheMicroserviceApi {
     this.requestMapper = requestMapper;
     this.responseMapper = responseMapper;
 
-    log.info("AURGI MOTORTOWNSYNC version 0.8");
+    log.info("MOTORTOWN MOTORTOWNSYNC version 0.8");
 
   }
 
@@ -83,7 +83,7 @@ public class Controller implements POSTEndpointOfTheMicroserviceApi {
 
     ServiceOutput output = service.writeProductsToSftp(requestMapper.mapInput(body));
 
-    log.info("AURGI POST received, result is" + output.getExampleOutputField());
+    log.info("MOTORTOWN POST received, result is" + output.getExampleOutputField());
 
     MicroserviceResponse result = responseMapper.mapOutput(output);
 
@@ -114,16 +114,12 @@ public class Controller implements POSTEndpointOfTheMicroserviceApi {
   public String getProductsDiff()
           throws Exception {
 
-    log.info("AURGI GET received");
+    log.info("MOTORTOWN GET received");
 
     String productResult = service.writeProductsToSftp();
     String stockResult = service.writeStockToSftp();
 
     return productResult + "," + stockResult;
-
-    //ServiceOutput output = new ServiceOutput("service.writeProductsDiffToSftp");
-    //MicroserviceResponse result = responseMapper.mapOutput(output);
-
 
   }
 

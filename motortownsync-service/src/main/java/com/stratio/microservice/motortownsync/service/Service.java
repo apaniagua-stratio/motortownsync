@@ -9,10 +9,6 @@ import java.util.concurrent.CompletableFuture;
 
 public interface Service {
 
-  /*
-  ServiceOutput doSomething(ServiceInput input);
-   */
-
 
   int numberOfProductos();
 
@@ -30,19 +26,6 @@ public interface Service {
 
   String writeProductsDiffToSftp();
 
- /*
-  String getFromMagentoAPI(String id);
 
-  CompletableFuture<String> async_getFromMagentoAPI(String id);
-
-  CompletableFuture<String>  async_postToMagentoAPI(Producto prod);
-
-  String postToMagentoAPI(Producto prod);
-
-
-  String getJSONProducto();
-
-  String getJSONProducto(Producto prod);
-  */
 
 }

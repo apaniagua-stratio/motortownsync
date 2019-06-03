@@ -12,6 +12,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ServiceInput {
 
-  private String exampleInputField;
+  private String sftpFile;
 
 }
