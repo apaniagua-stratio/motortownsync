@@ -14,7 +14,7 @@ import java.util.zip.ZipOutputStream;
 @Slf4j
 public class SftpWriter {
 
-    public List<String> readCsvFileFromSftp(String user,String host, String sftpkey, String remoteFile)
+    public List<String> readCsvFileFromSftp(String user,String host, String sftpkey, String remoteFile,String ECOMMERCE)
     {
 
         //2019_04_04_03_30.zip
@@ -37,17 +37,17 @@ public class SftpWriter {
             }
 
             session.setConfig("StrictHostKeyChecking", "no");
-            log.info("MOTORTOWN: Establishing Connection..." + user + "@" + host + " with " + sftpkey);
+            log.info(ECOMMERCE + ": Establishing Connection..." + user + "@" + host + " with " + sftpkey);
 
             session.connect();
-            log.info("MOTORTOWN: Connection established.");
+            log.info(ECOMMERCE +": Connection established.");
 
-            log.info("MOTORTOWN: Creating SFTP Channel.");
+            log.info(ECOMMERCE+ ": Creating SFTP Channel.");
             ChannelSftp sftpChannel = (ChannelSftp) session.openChannel("sftp");
             sftpChannel.connect();
 
             InputStream out= null;
-            log.info("MOTORTOWN: SFTP Getting file " + remoteFile);
+            log.info(ECOMMERCE + ": SFTP Getting file " + remoteFile);
             out= sftpChannel.get(remoteFile);
             BufferedReader br = new BufferedReader(new InputStreamReader(out));
 
@@ -63,20 +63,20 @@ public class SftpWriter {
             br.close();
             sftpChannel.disconnect();
             session.disconnect();
-            log.info("MOTORTOWN: SFTP channell and session closed");
+            log.info(ECOMMERCE + ": SFTP channell and session closed");
 
             return strings;
         }
         catch(JSchException | SftpException | IOException e)
         {
-            log.error("MOTORTOWN: " + e);
+            log.error(ECOMMERCE + ": " + e);
         }
 
         return null;
 
     }
 
-    public boolean writeCsvFileToSftp(String user, String host, String sftpkey,List<String> csvlines, String remoteFile, String fileFormat,String header)
+    public boolean writeCsvFileToSftp(String user, String host, String sftpkey,List<String> csvlines, String remoteFile, String fileFormat,String header,String ECOMMERCE)
     {
 
         int port=22;
@@ -100,22 +100,22 @@ public class SftpWriter {
             }
 
             session.setConfig("StrictHostKeyChecking", "no");
-            log.info("MOTORTOWN: SFTP Establishing Connection..." + user + "@" + host + " with " + sftpkey);
+            log.info(ECOMMERCE + ": SFTP Establishing Connection..." + user + "@" + host + " with " + sftpkey);
 
             session.connect();
-            log.info("MOTORTOWN: SFTP Connection established.");
+            log.info(ECOMMERCE + ": SFTP Connection established.");
 
-            log.info("MOTORTOWN: SFTP Creating channel.");
+            log.info(ECOMMERCE + ": SFTP Creating channel.");
             ChannelSftp sftpChannel = (ChannelSftp) session.openChannel("sftp");
             sftpChannel.connect();
 
-            log.info("MOTORTOWN: SFTP Channel created.");
+            log.info(ECOMMERCE + ": SFTP Channel created.");
 
 
             String content = header + "\n";
             Iterator<String> lisIterator = csvlines.iterator();
 
-            log.info("MOTORTOWN SFTP: will write " + csvlines.size() + " lines to file " + remoteFile);
+            log.info(ECOMMERCE + ": SFTP: will write " + csvlines.size() + " lines to file " + remoteFile);
 
 
             while (lisIterator.hasNext()) {
@@ -134,7 +134,7 @@ public class SftpWriter {
             }
 
 
-            log.info("MOTORTOWN: SFTP File put.");
+            log.info(ECOMMERCE + ": SFTP File put.");
 
             stream.close();
             sftpChannel.disconnect();
@@ -142,7 +142,7 @@ public class SftpWriter {
             content="";
             csvlines.clear();
 
-            log.info("MOTORTOWN: SFTP Channel and session closed.");
+            log.info(ECOMMERCE + ": SFTP Channel and session closed.");
 
 
             //also write differences from last csv written
@@ -206,12 +206,12 @@ public class SftpWriter {
             }
 
             session.setConfig("StrictHostKeyChecking", "no");
-            log.info("MOTORTOWN: SFTP Establishing Connection..." + user + "@" + host + " with " + sftpkey);
+            //log.info("MOTORTOWN: SFTP Establishing Connection..." + user + "@" + host + " with " + sftpkey);
 
             session.connect();
-            log.info("MOTORTOWN: SFTP Connection established.");
+            //log.info("MOTORTOWN: SFTP Connection established.");
 
-            log.info("MOTORTOWN: SFTP Creating channel.");
+            //log.info("MOTORTOWN: SFTP Creating channel.");
             ChannelSftp sftpChannel = (ChannelSftp) session.openChannel("sftp");
             sftpChannel.connect();
 
@@ -241,8 +241,8 @@ public class SftpWriter {
             sftpChannel.exit();
             session.disconnect();
 
-            log.info("MOTORTOWN: SFTP latest file currently is:" + oldestFile);
-            log.info("MOTORTOWN: SFTP channell and session closed");
+            //log.info("MOTORTOWN: SFTP latest file currently is:" + oldestFile);
+            //log.info("MOTORTOWN: SFTP channell and session closed");
 
         }
         catch(JSchException | SftpException e)
@@ -254,7 +254,7 @@ public class SftpWriter {
     }
 
 
-    public List<CsvRow> rowsFromSftpZip(String user, String host, String sftpkey, String remoteZipFile)
+    public List<CsvRow> rowsFromSftpZip(String user, String host, String sftpkey, String remoteZipFile, String ECOMMERCE)
     {
 
         int port=22;
@@ -274,17 +274,17 @@ public class SftpWriter {
             }
 
             session.setConfig("StrictHostKeyChecking", "no");
-            log.info("MOTORTOWN: Establishing Connection..." + user + "@" + host + " with " + sftpkey);
+            log.info(ECOMMERCE + ": Establishing Connection..." + user + "@" + host + " with " + sftpkey);
 
             session.connect();
-            log.info("MOTORTOWN: Connection established.");
+            log.info(ECOMMERCE + ": Connection established.");
 
 
-            log.info("MOTORTOWN: Creating SFTP Channel.");
+            log.info(ECOMMERCE + ": Creating SFTP Channel.");
             ChannelSftp sftpChannel = (ChannelSftp) session.openChannel("sftp");
             sftpChannel.connect();
 
-            log.info("MOTORTOWN: SFTP Reading zip file " + remoteZipFile);
+            log.info(ECOMMERCE + ": SFTP Reading zip file " + remoteZipFile);
 
             List<InputStream> inputStreams = new ArrayList<>();
             List<String> inputFilenames = new ArrayList<>();
@@ -295,7 +295,7 @@ public class SftpWriter {
 
                 while (entry != null) {
 
-                    log.info("MOTORTOWN: Zip file contains this: " + entry.getName());
+                    log.info(ECOMMERCE + ": Zip file contains this: " + entry.getName());
 
                     InputStream in = convertToInputStream(zipInputStream);
 
@@ -315,7 +315,7 @@ public class SftpWriter {
             }
 
             sftpChannel.disconnect();
-            log.info("MOTORTOWN: SFTP GET CHANNEL DISCONNECT");
+            log.info(ECOMMERCE + ": SFTP GET CHANNEL DISCONNECT");
 
 
             return rowsReaded;
@@ -324,7 +324,7 @@ public class SftpWriter {
 
         catch(JSchException | IOException | SftpException e)
         {
-            log.error("MOTORTOWN: " + e);
+            log.error(ECOMMERCE + ": " + e);
         }
 
         return null;

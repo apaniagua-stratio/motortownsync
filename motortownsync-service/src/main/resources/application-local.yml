@@ -18,9 +18,9 @@ logging:
 
 spring:
   datasource:
-        url: jdbc:postgresql://poolpostgrestls.anjana.local:10234/postgres?user=fjurado&prepareThreshold=0&reWriteBatchedInserts=true&ssl=true&sslmode=verify-ca&sslcert=/home/apaniagua/Documentos/aurgi/certs/Certificado Postgres (conexión desde exterior)/fjurado.crt&sslrootcert=/home/apaniagua/Documentos/aurgi/certs/Certificado Postgres (conexión desde exterior)/root-ca.crt&sslkey=/home/apaniagua/Documentos/aurgi/certs/Certificado Postgres (conexión desde exterior)/fjurado.pk8&loginTimeout=60
-        username: fjurado
-        password:
+    url: jdbc:postgresql://poolpostgrestls.anjana.local:10234/postgres?user=fjurado&prepareThreshold=0&reWriteBatchedInserts=true&ssl=true&sslmode=verify-ca&sslcert=/home/apaniagua/Documentos/aurgi/certs/Certificado Postgres (conexión desde exterior)/fjurado.crt&sslrootcert=/home/apaniagua/Documentos/aurgi/certs/Certificado Postgres (conexión desde exterior)/root-ca.crt&sslkey=/home/apaniagua/Documentos/aurgi/certs/Certificado Postgres (conexión desde exterior)/fjurado.pk8&loginTimeout=60
+    username: fjurado
+    password:
 
 spring.jpa.properties.hibernate.jdbc.batch_size : 50
 spring.jpa.properties.hibernate.order_inserts : true
@@ -29,21 +29,26 @@ spring.jpa.properties.hibernate.order_inserts : true
 #username: postgres
 
 
+
+#productsfile: anjana/in/motortown_productos_servicios.csv
+#stockfile: anjana/in/motortown_stock_por_centro.csv
+#pricatfile: anjana/in/pricat_ctop.csv
+
+ecommerce: MOTORTOWN
 sftphost: 10.20.1.112
 sftpuser: motortown_watcher
-productsfile: anjana/in/motortown_productos_servicios.csv
-stockfile: anjana/in/motortown_stock_por_centro.csv
-pricatfile: anjana/in/pricat_ctop.csv
 sftpkey: /home/apaniagua/.ssh/id_rsa
 sftpoutfolder: /anjana/motortown_pro/ingesta_productos_stock/procesado/
-schedulerRate: 600000
 sftpoutputformat: zip
 sftpsplitfiles: false
 sftpdifffiles: false
+schedulerRate: 600000
 spartawfpath: /motortown
 spartawfname: motortown-recalculo
 spartawfversion: 18
 spartaretries: 3
+spartahost: sparta.anjana.local/sparta-server
+requestauth: https://cc.anjana.local/sso/login?service=https%3A%2F%2Fcc.anjana.local%2Fsso%2Foauth2.0%2FcallbackAuthorize
 
 server:
   port: 8889

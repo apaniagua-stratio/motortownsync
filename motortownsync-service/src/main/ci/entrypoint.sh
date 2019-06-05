@@ -43,12 +43,9 @@ fi
 INFO "motorsync2 Logged on vault."
 
 #### Basic Authentication for config-server #######
-
 #getPass userland ${CONFIG_SERVER_NAME} basicauth
-
 #CONFIG_SERVER_NAME_UNDERSCORE=${CONFIG_SERVER_NAME//-/_}
 #CONFIG_SERVER_NAME_UPPERCASE=${CONFIG_SERVER_NAME_UNDERSCORE^^}
-
 #BASICAUTH_USER_VAR=${CONFIG_SERVER_NAME_UPPERCASE}_BASICAUTH_USER
 #BASICAUTH_PASS_VAR=${CONFIG_SERVER_NAME_UPPERCASE}_BASICAUTH_PASS
 #export BASICAUTH_USERNAME=${!BASICAUTH_USER_VAR}
@@ -77,34 +74,33 @@ getCAbundle "/data/stratio" "PEM" \
     && echo "motortownimport OK: Getting ca-bundle"   \
     || echo "motortownimport Error: Getting ca-bundle"
 
-CA_BUNDLE_PEM="/data/stratio/ca-bundle.pem"
+INFO "[TRUSTSTORE-CONFIG] Getting accepted certs from vault"
+getCAbundle "/data/stratio" JKS "truststore.jks"
 
+CA_BUNDLE_PEM="/data/stratio/truststore.jks"
+
+URL_DATASOURCE_GLOBAL="?prepareThreshold=0&ssl=true&sslmode=verify-full&sslcert=${POSTGRES_CERT}&sslrootcert=${CA_BUNDLE_PEM}&sslkey=${POSTGRES_KEY}"
+
+CA_BUNDLE_PEM="/data/stratio/ca-bundle.pem"
 openssl x509 -outform der -in ${CA_BUNDLE_PEM} -out ${CA_BUNDLE_PEM}.der
 
 openssl pkcs8 -topk8 -inform PEM -outform DER -in /data/stratio/motortown_sync.key -out /data/stratio/motortown_sync.key.pk8 -nocrypt
 
-#openssl pkcs8 -topk8 -inform PEM -outform DER -in "/data/stratio/motortown_sync.key" -out "/data/stratio/key.pkcs8" -nocrypt
-#openssl pkcs8 -topk8 -inform PEM -outform DER -in ${CERTIFICATES_PATH}/${FQDN}.key -out ${CERTIFICATES_PATH}/${FQDN}.key.pk8 -nocrypt
+export JVMCA_PASS="changeit"
+INFO "[TRUSTSTORE-CONFIG] Adding certs to java trust store"
+${JAVA_HOME}/bin/keytool -importkeystore -srckeystore "/data/stratio/truststore.jks" -destkeystore $JAVA_HOME/lib/security/cacerts \
+-srcstorepass "$DEFAULT_KEYSTORE_PASS" -deststorepass "$JVMCA_PASS" -noprompt
 
-#export POSTGRES_URL=${POSTGRES_URL}
-#export POSTGRES_CERT="/data/stratio/motortown_sync.pem"
-#export POSTGRES_KEY="/data/stratio/motortown_sync.key.pk8"
-#export CA_BUNDLE_PEM="/data/stratio/ca-bundle.pem"
-
-
-#URL="?prepareThreshold=0&ssl=true&sslmode=verify-full&sslcert=/data/stratio/motortown_sync.pem&sslrootcert=/data/stratio/ca-bundle.pem&sslkey=/data/stratio/key.pkcs8"
-
-#openssl pkcs8 -topk8 -inform PEM -in /data/stratio/motortown_sync.key -outform DER -out ${POSTGRES_KEY} -nocrypt
-#openssl pkcs8 -topk8 -inform PEM -outform DER -in ${CERTIFICATES_PATH}/${FQDN}.key -out ${CERTIFICATES_PATH}/${FQDN}.key.pk8 -nocrypt
-
-
-URL_DATASOURCE_GLOBAL="?prepareThreshold=0&ssl=true&sslmode=verify-full&sslcert=${POSTGRES_CERT}&sslrootcert=${CA_BUNDLE_PEM}&sslkey=${POSTGRES_KEY}"
-
-#${JAVA_HOME}/bin/keytool -noprompt -import -storepass "changeit" -file ${CA_BUNDLE_PEM}.der -alias ${MARATHON_SERVICE_NAME} -cacerts
-#${JAVA_HOME}/bin/keytool -noprompt -import -storepass "changeit" -file ${CA_BUNDLE_PEM}.der -alias "motortown_sync" -cacerts
+export SPARTA_TLS_TRUSTSTORE_PASSWORD=$DEFAULT_KEYSTORE_PASS
 
 ${JAVA_HOME}/bin/keytool -noprompt -import -storepass "changeit" -file ${CA_BUNDLE_PEM}.der -alias ${MARATHON_SERVICE_NAME} -cacerts
+
 
 HEAP_PERCENTAGE=${HEAP_PERCENTAGE:-"80"}
 JAVA_TOOL_OPTIONS=${JAVA_TOOL_OPTIONS:-"-XX:+UseG1GC -XX:MaxRAMPercentage=${HEAP_PERCENTAGE} -XshowSettings:vm"}
 java ${JAVA_TOOL_OPTIONS} -jar /data/app.jar ${JAVA_ARGS}
+
+
+#java ${JAVA_TOOL_OPTIONS} -Djavax.net.debug=ssl:handshake -jar /data/app.jar ${JAVA_ARGS}
+
+

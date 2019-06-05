@@ -55,24 +55,6 @@ public class Controller implements POSTEndpointOfTheMicroserviceApi {
 
   }
 
-  /*
-  @Override
-  @RequestMapping(value = "/microservices",
-      produces = { "application/json" },
-      consumes = { "application/json" },
-      method = RequestMethod.POST)
-  public ResponseEntity<MicroserviceResponse> doSomething(@ApiParam(value = "Example of body input for the microservice" ,required=true )  @Valid @RequestBody MicroserviceRequest body)
-  throws Exception {
-
-      ServiceOutput output = service.doSomething(requestMapper.mapInput(body));
-
-      MicroserviceResponse result = responseMapper.mapOutput(output);
-
-      return new ResponseEntity<>(result, HttpStatus.OK);
-
-  }
-  */
-
 
   @RequestMapping(value = "/sftpwriter",
           produces = { "application/json" },
@@ -111,7 +93,7 @@ public class Controller implements POSTEndpointOfTheMicroserviceApi {
           method = RequestMethod.GET)
   @Timed
   @Transactional(timeout = 180)
-  public String getProductsDiff()
+  public String productscsv()
           throws Exception {
 
     log.info("MOTORTOWN GET received");

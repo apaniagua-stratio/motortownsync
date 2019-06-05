@@ -50,6 +50,8 @@ public class ServiceImpl implements com.stratio.microservice.motortownsync.servi
   private int spartawfversion;
   @Value("${spartaretries}")
   private int spartaretries;
+  @Value("${ecommerce}")
+  private String ECOMMERCE;
 
 
   @Override
@@ -68,9 +70,9 @@ public class ServiceImpl implements com.stratio.microservice.motortownsync.servi
 
     String filename = sftpoutfolder + "magento_csv_products_" + fecha + ".csv";
 
-    boolean resul = writer.writeCsvFileToSftp(sftpuser, sftphost, sftpkey, rows, filename,"csv",addProductsHeader());
+    boolean resul = writer.writeCsvFileToSftp(sftpuser, sftphost, sftpkey, rows, filename,"csv",addProductsHeader(),ECOMMERCE);
 
-    log.info("MOTORTOWN write file: " + filename + " to stfp file: " + resul);
+    log.info(ECOMMERCE + ": write file: " + filename + " to stfp file: " + resul);
 
     return new ServiceOutput("file " + filename +  " written: " + resul );
 
@@ -82,7 +84,7 @@ public class ServiceImpl implements com.stratio.microservice.motortownsync.servi
 
     List<String> rows = repo.getStockCsv();
     String originalFile = repo.getProductOriginalFile();
-    log.info("MOTORTOWN: POSTGRES STOCK read " + rows.size() + " rows.");
+    log.info(ECOMMERCE + ": POSTGRES STOCK read " + rows.size() + " rows.");
 
     SftpWriter writer = new SftpWriter();
 
@@ -94,8 +96,8 @@ public class ServiceImpl implements com.stratio.microservice.motortownsync.servi
 
 
     //TODO: write total file
-    boolean resul = writer.writeCsvFileToSftp(sftpuser, sftphost, sftpkey, rows, filename,"csv",addStockHeader());
-    log.info("MOTORTOWN write file: " + filename + " " + sftpoutputformat + " to stfp file: " + resul);
+    boolean resul = writer.writeCsvFileToSftp(sftpuser, sftphost, sftpkey, rows, filename,"csv",addStockHeader(),ECOMMERCE);
+    log.info(ECOMMERCE + ": write file: " + filename + " " + sftpoutputformat + " to stfp file: " + resul);
 
     return filename +  " : " + resul ;
 
@@ -106,7 +108,7 @@ public class ServiceImpl implements com.stratio.microservice.motortownsync.servi
 
     List<String> rows = repo.getProductoCsv();
     String originalFile = repo.getProductOriginalFile();
-    log.info("MOTORTOWN: POSTGRES read " + rows.size() + " rows.");
+    log.info(ECOMMERCE + ": POSTGRES read " + rows.size() + " rows.");
 
     SftpWriter writer = new SftpWriter();
 
@@ -118,8 +120,8 @@ public class ServiceImpl implements com.stratio.microservice.motortownsync.servi
 
 
     //TODO: write total file
-    boolean resul = writer.writeCsvFileToSftp(sftpuser, sftphost, sftpkey, rows, filename,sftpoutputformat,addProductsHeader());
-    log.info("MOTORTOWN write file: " + filename + " " + sftpoutputformat + " to stfp file: " + resul);
+    boolean resul = writer.writeCsvFileToSftp(sftpuser, sftphost, sftpkey, rows, filename,sftpoutputformat,addProductsHeader(),ECOMMERCE);
+    log.info(ECOMMERCE + ": SFTP write file: " + filename + " " + sftpoutputformat + " to stfp file: " + resul);
 
     return filename +  " : " + resul ;
 
@@ -131,22 +133,22 @@ public class ServiceImpl implements com.stratio.microservice.motortownsync.servi
     SftpWriter writer = new SftpWriter();
 
     List<CsvRow> rows= new ArrayList<>();
-    rows = writer.rowsFromSftpZip(sftpuser,sftphost,sftpkey,input.getSftpFile());
+    rows = writer.rowsFromSftpZip(sftpuser,sftphost,sftpkey,input.getSftpFile(),ECOMMERCE);
 
-    log.info("MOTORTOWN POSTGRES:  start writing to PG this number of entities" + rows.size());
+    log.info(ECOMMERCE + ": POSTGRES:  start writing to PG this number of entities" + rows.size());
     csvrowrepo.deleteAllInBatch();
     csvrowrepo.flush();
     csvrowrepo.save(rows);
-    log.info("MOTORTOWN POSTGRES:  " + rows.size() +  " csv rows written in PG table. ");
+    log.info(ECOMMERCE + ": POSTGRES:  " + rows.size() +  " csv rows written in PG table. ");
 
     int currentTry=1;
 
     String wfResult="";
     while (currentTry <= spartaretries && ! wfResult.equalsIgnoreCase("Finished")) {
 
-      log.info("MOTORTOWN SPARTA: running " + spartawfname + " v" + spartawfversion + " execution number " + currentTry);
+      log.info(ECOMMERCE + ": SPARTA: running " + spartawfname + " v" + spartawfversion + " execution number " + currentTry);
       wfResult = runWorkflow(spartawfpath,spartawfname,spartawfversion);
-      log.info("MOTORTOWN SPARTA: " + spartawfname + " v" + spartawfversion + " execution number " + currentTry +  " finished with state " + wfResult);
+      log.info(ECOMMERCE + ": SPARTA: " + spartawfname + " v" + spartawfversion + " execution number " + currentTry +  " finished with state " + wfResult);
       currentTry++;
     }
 
@@ -154,6 +156,7 @@ public class ServiceImpl implements com.stratio.microservice.motortownsync.servi
     result += " Products file: " +  writeProductsToSftp();
     result += " Stock file: " +   writeStockToSftp();
 
+    log.info(ECOMMERCE + ": reprocess end with result: " + result);
     return new ServiceOutput(result);
 
   }
@@ -161,8 +164,18 @@ public class ServiceImpl implements com.stratio.microservice.motortownsync.servi
   private String runWorkflow(String wf_path, String wf_name,int wf_version) {
 
     String sTicket=StratioHttpClient.getDCOSTicket();
+    log.info(ECOMMERCE+ ": DCOS ticket: " + sTicket);
 
-    String resul=StratioHttpClient.runSpartaWF(sTicket,wf_path,wf_name,wf_version);
+    String resul="";
+    try {
+
+      Thread.sleep(3000);
+      resul=StratioHttpClient.runSpartaWF(sTicket,wf_path,wf_name,wf_version);
+
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
+
 
     return resul;
   }
@@ -171,7 +184,7 @@ public class ServiceImpl implements com.stratio.microservice.motortownsync.servi
   public String writeProductsDiffToSftp() {
 
     List<String> rows = repo.getProductoCsv();
-    log.info("AURGI: POSTGRES read " + rows.size() + " rows.");
+    log.info("MOTORTOWN: POSTGRES read " + rows.size() + " rows.");
 
     SftpWriter writer = new SftpWriter();
 
@@ -184,7 +197,7 @@ public class ServiceImpl implements com.stratio.microservice.motortownsync.servi
     String filename = sftpoutfolder + "magento_csv_products_" + fecha + ".csv";
     String filenameDiff = sftpoutfolder + "magento_csv_products_" + fecha + "_DIFF.csv";
 
-    boolean resul = writer.writeCsvFileToSftp(sftpuser, sftphost, sftpkey, rows, filename,"csv",addProductsHeader());
+    boolean resul = writer.writeCsvFileToSftp(sftpuser, sftphost, sftpkey, rows, filename,"csv",addProductsHeader(),ECOMMERCE);
     log.info("AURGI write file: " + filename + " to stfp file: " + resul);
 
     //TODO: use replace all if more dependencies are needed
@@ -192,7 +205,7 @@ public class ServiceImpl implements com.stratio.microservice.motortownsync.servi
 
     if (!lastFile.isEmpty()) {
 
-      List<String> lastrows = writer.readCsvFileFromSftp(sftpuser, sftphost, sftpkey,sftpoutfolder + lastFile);
+      List<String> lastrows = writer.readCsvFileFromSftp(sftpuser, sftphost, sftpkey,sftpoutfolder + lastFile,ECOMMERCE);
 
       log.info("AURGI: SFTP read rows " + lastrows.size() + " from  previoues file" );
 
@@ -200,7 +213,7 @@ public class ServiceImpl implements com.stratio.microservice.motortownsync.servi
             .filter(not(new HashSet<>(lastrows)::contains))
             .collect(Collectors.toList());
 
-      resuldiff= writer.writeCsvFileToSftp(sftpuser, sftphost, sftpkey, diffrows, filenameDiff,"csv",addProductsHeader());
+      resuldiff= writer.writeCsvFileToSftp(sftpuser, sftphost, sftpkey, diffrows, filenameDiff,"csv",addProductsHeader(),ECOMMERCE);
       log.info("AURGI write file: " + filenameDiff + " to stfp file: " + resuldiff);
     }
 
