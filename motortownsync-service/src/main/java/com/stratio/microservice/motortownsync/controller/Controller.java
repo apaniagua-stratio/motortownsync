@@ -51,7 +51,7 @@ public class Controller implements POSTEndpointOfTheMicroserviceApi {
     this.requestMapper = requestMapper;
     this.responseMapper = responseMapper;
 
-    log.info("MOTORTOWN MOTORTOWNSYNC version 0.8");
+    log.info("MOTORTOWN MOTORTOWNSYNC version 0.9");
 
   }
 
@@ -80,6 +80,8 @@ public class Controller implements POSTEndpointOfTheMicroserviceApi {
   public ResponseEntity<MicroserviceResponse> reprocess(@ApiParam(value = "" ,required=false )  @Valid @RequestBody MicroserviceRequest body)
           throws Exception {
 
+    log.info("MOTORTOWN: External call GET reprocess received");
+
     ServiceOutput output = service.reprocess(requestMapper.mapInput(body));
 
     MicroserviceResponse result = responseMapper.mapOutput(output);
@@ -96,7 +98,7 @@ public class Controller implements POSTEndpointOfTheMicroserviceApi {
   public String productscsv()
           throws Exception {
 
-    log.info("MOTORTOWN GET received");
+    log.info("MOTORTOWN: External call GET productscsvfile received");
 
     String productResult = service.writeProductsToSftp();
     String stockResult = service.writeStockToSftp();

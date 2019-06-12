@@ -112,62 +112,6 @@ public class StratioHttpClient {
 
         try {
 
-            /*
-            SSLContext sslContext = SSLContext.getInstance("SSL");
-
-            sslContext.init(null,
-                    new TrustManager[]{new X509TrustManager() {
-                        public X509Certificate[] getAcceptedIssuers() {
-
-                            return null;
-                        }
-
-                        public void checkClientTrusted(
-                                X509Certificate[] certs, String authType) {
-
-                        }
-
-                        public void checkServerTrusted(
-                                X509Certificate[] certs, String authType) {
-
-                        }
-                    }}, new SecureRandom());
-
-
-             */
-
-            /* david solution -----------
-            SSLContext sslContext= SSLContextBuilder.create().loadTrustMaterial(null, new TrustStrategy() {
-                @Override
-                public boolean isTrusted(X509Certificate[] chain, String authType) throws CertificateException {
-                    return true;
-                }
-            }).build();
-
-            //SSLConnectionSocketFactory socketFactory = new SSLConnectionSocketFactory(sslContext, SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
-
-            HttpClient httpClient = HttpClientBuilder.create()
-                    .setSSLContext(sslContext)
-                    .setDefaultRequestConfig(RequestConfig.custom()
-                            .setCookieSpec(CookieSpecs.STANDARD).build()).build();
-
-             ----------------------- */
-
-
-            /*
-            SSLContextBuilder builder = new SSLContextBuilder();
-            builder.loadTrustMaterial(null, new TrustSelfSignedStrategy());
-            SSLConnectionSocketFactory socketFactory = new SSLConnectionSocketFactory(
-                    builder.build());
-
-            HttpClient httpClient = HttpClientBuilder.create()
-                    .setSSLSocketFactory(socketFactory)
-                    .setDefaultRequestConfig(RequestConfig.custom()
-                            .setCookieSpec(CookieSpecs.STANDARD).build()).build();
-
-             */
-
-
             SSLContextBuilder sslctxb = new SSLContextBuilder();
 
             sslctxb.loadTrustMaterial(KeyStore.getInstance(KeyStore.getDefaultType()),
