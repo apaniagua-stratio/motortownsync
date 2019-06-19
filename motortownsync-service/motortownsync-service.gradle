@@ -45,7 +45,6 @@ dependencies {
   compile "org.springframework.cloud:spring-cloud-starter-config"
   compile "org.springframework.boot:spring-boot-starter-web"
   compile "org.springframework.boot:spring-boot-starter-actuator"
-
   compile "org.postgresql:postgresql:42.2.2"
   compile 'org.springframework.boot:spring-boot-starter-data-jpa'
 
@@ -71,16 +70,30 @@ dependencies {
   compile "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${jacksonDataTypeVersion}"
   compile "org.springframework.cloud:spring-cloud-starter-sleuth:${sleuthVersion}"
 
-
   compile "io.springfox:springfox-swagger2:${swaggerVersion}"
   compile "io.springfox:springfox-swagger-ui:${swaggerVersion}"
   compile "io.springfox:springfox-bean-validators:${swaggerVersion}"
 
   compile group: 'com.jcraft', name: 'jsch', version: '0.1.55'
 
-  testCompile "org.springframework.boot:spring-boot-starter-test"
-  testCompile "junit:junit"
-  testCompile "uk.co.jemos.podam:podam:${podamVersion}"
+  compile group: 'org.mockito', name: 'mockito-core', version: '2.22.0'
+
+
+  //testCompile "org.springframework.boot:spring-boot-starter-test"
+  //testCompile "junit:junit"
+  //testCompile "uk.co.jemos.podam:podam:${podamVersion}"
+  //testCompile 'org.junit.jupiter:junit-jupiter-engine:5.2.0'
+  //testCompile('org.mockito:mockito-junit-jupiter:2.23.0')
+  // https://mvnrepository.com/artifact/com.h2database/h2
+  //testCompile group: 'com.h2database', name: 'h2', version: '1.4.197'
+
+  testCompile 'org.springframework.boot:spring-boot-starter-test'
+  testCompile libraries.testing
+  testCompile "uk.co.jemos.podam:podam:7.2.0.RELEASE"
+  testCompile 'org.apache.tomcat.embed:tomcat-embed-el'
+
+
+
 }
 
 

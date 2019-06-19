@@ -55,6 +55,10 @@ public class Controller implements POSTEndpointOfTheMicroserviceApi {
 
   }
 
+  @RequestMapping("/")
+  public String home() {
+    return "motortown_sync";
+  }
 
   @RequestMapping(value = "/sftpwriter",
           produces = { "application/json" },
@@ -62,6 +66,8 @@ public class Controller implements POSTEndpointOfTheMicroserviceApi {
           method = RequestMethod.POST)
   public ResponseEntity<MicroserviceResponse> writeProductsToSftp(@ApiParam(value = "Example of body input for the microservice sftpwriter" ,required=false )  @Valid @RequestBody MicroserviceRequest body)
           throws Exception {
+
+    log.info("Entering request (GET) /reprocess with {body}",body);
 
     ServiceOutput output = service.writeProductsToSftp(requestMapper.mapInput(body));
 
@@ -80,7 +86,9 @@ public class Controller implements POSTEndpointOfTheMicroserviceApi {
   public ResponseEntity<MicroserviceResponse> reprocess(@ApiParam(value = "" ,required=false )  @Valid @RequestBody MicroserviceRequest body)
           throws Exception {
 
-    log.info("MOTORTOWN: External call GET reprocess received");
+
+    log.info("Entering request (GET) /reprocess with {body}",body);
+
 
     ServiceOutput output = service.reprocess(requestMapper.mapInput(body));
 
@@ -98,7 +106,7 @@ public class Controller implements POSTEndpointOfTheMicroserviceApi {
   public String productscsv()
           throws Exception {
 
-    log.info("MOTORTOWN: External call GET productscsvfile received");
+    log.info("Entering request (GET) /productscsvfile");
 
     String productResult = service.writeProductsToSftp();
     String stockResult = service.writeStockToSftp();

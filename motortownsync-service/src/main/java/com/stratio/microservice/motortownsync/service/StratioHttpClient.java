@@ -90,6 +90,7 @@ public class StratioHttpClient {
                     .setDefaultRequestConfig(RequestConfig.custom()
                             .setCookieSpec(CookieSpecs.STANDARD).build()).build();
 
+
             /*
             SSLContextBuilder builder = new SSLContextBuilder();
             builder.loadTrustMaterial(null, new TrustSelfSignedStrategy());
