@@ -132,8 +132,7 @@ public class ServiceImpl implements com.stratio.microservice.motortownsync.servi
 
     SftpWriter writer = new SftpWriter();
 
-    List<CsvRow> rows=
-
+    List<CsvRow> rows;
     rows = writer.rowsFromSftpZip(sftpuser,sftphost,sftpkey,input.getSftpFile(),ECOMMERCE);
 
     log.info(ECOMMERCE + ": POSTGRES:  start writing to PG this number of entities" + rows.size());

@@ -29,7 +29,7 @@ public class CsvRowRepositoryTest {
 
         List<CsvRow> rows = new ArrayList<>();
 
-        //int i = repository.save(rows).size();
+        int i = repository.save(rows).size();
 
         verify(repository.save(rows));
 

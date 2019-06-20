@@ -153,7 +153,10 @@ public class StratioHttpClient {
                 }
             });
 
+
+            hcb.setDefaultRequestConfig(RequestConfig.custom().setCookieSpec(CookieSpecs.DEFAULT).build());
             HttpClient c = hcb.build();
+
 
             return c;
 
@@ -398,11 +401,12 @@ public class StratioHttpClient {
 
             //wait for completion
             while (!lastState.equalsIgnoreCase(FINISHED_STATE) && !lastState.equalsIgnoreCase(FAILED_STATE)) {
-                Thread.sleep(15000);
+                Thread.sleep(20000);
 
                 HttpResponse execresponse2 = apiClient.execute(execpost);
                 execResult = EntityUtils.toString(execresponse2.getEntity());
                 lastState = parseWfState(execResult);
+                log.info("MOTORTOWN execute /run response=" + execResult);
 
             }
 

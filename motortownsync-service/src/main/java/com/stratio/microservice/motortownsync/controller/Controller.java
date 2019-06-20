@@ -87,7 +87,7 @@ public class Controller implements POSTEndpointOfTheMicroserviceApi {
           throws Exception {
 
 
-    log.info("Entering request (GET) /reprocess with {body}",body);
+    log.info("Entering request (GET) /reprocess with {body}" + body.getSftpFile());
 
 
     ServiceOutput output = service.reprocess(requestMapper.mapInput(body));
