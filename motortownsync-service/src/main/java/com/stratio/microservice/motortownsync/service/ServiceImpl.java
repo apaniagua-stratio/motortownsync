@@ -171,6 +171,7 @@ public class ServiceImpl implements com.stratio.microservice.motortownsync.servi
 
       Thread.sleep(3000);
       resul=StratioHttpClient.runSpartaWF(sTicket,wf_path,wf_name,wf_version);
+      return resul;
 
     } catch (InterruptedException e) {
       e.printStackTrace();

@@ -400,16 +400,22 @@ public class StratioHttpClient {
             String lastState = parseWfState(execResult);
 
             //wait for completion
+            int c=0;
             while (!lastState.equalsIgnoreCase(FINISHED_STATE) && !lastState.equalsIgnoreCase(FAILED_STATE)) {
-                Thread.sleep(20000);
+                Thread.sleep(30000);
 
                 HttpResponse execresponse2 = apiClient.execute(execpost);
                 execResult = EntityUtils.toString(execresponse2.getEntity());
                 lastState = parseWfState(execResult);
                 log.info("MOTORTOWN execute /run response=" + execResult);
+                c++;
+                if (c > 9) {
+                    lastState=FAILED_STATE;
+                }
 
             }
 
+            log.info("MOTORTOWN exit api call with state " + lastState);
             return lastState;
 
 
