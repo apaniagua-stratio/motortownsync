@@ -51,7 +51,7 @@ public class Controller implements POSTEndpointOfTheMicroserviceApi {
     this.requestMapper = requestMapper;
     this.responseMapper = responseMapper;
 
-    log.info("MOTORTOWN MOTORTOWNSYNC version 0.9");
+    log.info("MOTORTOWN MOTORTOWNSYNC DEV");
 
   }
 
@@ -71,7 +71,7 @@ public class Controller implements POSTEndpointOfTheMicroserviceApi {
 
     ServiceOutput output = service.writeProductsToSftp(requestMapper.mapInput(body));
 
-    log.info("MOTORTOWN POST received, result is" + output.getExampleOutputField());
+    log.info("MOTORTOWN POST received, result is" + output.getResultOutputField());
 
     MicroserviceResponse result = responseMapper.mapOutput(output);
 

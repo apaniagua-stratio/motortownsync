@@ -42,7 +42,7 @@ public class SftpWriter {
             session.connect();
             log.info(ECOMMERCE +": Connection established.");
 
-            log.info(ECOMMERCE+ ": Creating SFTP Channel.");
+            //log.info(ECOMMERCE+ ": Creating SFTP Channel.");
             ChannelSftp sftpChannel = (ChannelSftp) session.openChannel("sftp");
             sftpChannel.connect();
 
@@ -105,11 +105,11 @@ public class SftpWriter {
             session.connect();
             log.info(ECOMMERCE + ": SFTP Connection established.");
 
-            log.info(ECOMMERCE + ": SFTP Creating channel.");
+            //log.info(ECOMMERCE + ": SFTP Creating channel.");
             ChannelSftp sftpChannel = (ChannelSftp) session.openChannel("sftp");
             sftpChannel.connect();
 
-            log.info(ECOMMERCE + ": SFTP Channel created.");
+            //log.info(ECOMMERCE + ": SFTP Channel created.");
 
 
             String content = header + "\n";
@@ -134,7 +134,7 @@ public class SftpWriter {
             }
 
 
-            log.info(ECOMMERCE + ": SFTP File put.");
+            //log.info(ECOMMERCE + ": SFTP File put.");
 
             stream.close();
             sftpChannel.disconnect();
@@ -280,11 +280,11 @@ public class SftpWriter {
             log.info(ECOMMERCE + ": Connection established.");
 
 
-            log.info(ECOMMERCE + ": Creating SFTP Channel.");
+            //log.info(ECOMMERCE + ": Creating SFTP Channel.");
             ChannelSftp sftpChannel = (ChannelSftp) session.openChannel("sftp");
             sftpChannel.connect();
 
-            log.info(ECOMMERCE + ": SFTP Reading zip file " + remoteZipFile);
+            //log.info(ECOMMERCE + ": SFTP Reading zip file " + remoteZipFile);
 
             List<InputStream> inputStreams = new ArrayList<>();
             List<String> inputFilenames = new ArrayList<>();
@@ -315,7 +315,7 @@ public class SftpWriter {
             }
 
             sftpChannel.disconnect();
-            log.info(ECOMMERCE + ": SFTP GET CHANNEL DISCONNECT");
+            log.info(ECOMMERCE + ": SFTP GET channel disconnect");
 
 
             return rowsReaded;

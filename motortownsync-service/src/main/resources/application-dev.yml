@@ -42,7 +42,7 @@ sftpsplitfiles: false
 sftpdifffiles: false
 spartawfpath: /motortown
 spartawfname: motortown-recalculo
-spartawfversion: 20
+spartawfversion: 22
 spartaretries: 3
 spartahost: sparta.anjana.local/sparta-server
 requestauth: https://cc.anjana.local.marathon.mesos/sso/login?service=https%3A%2F%2Fcc.anjana.local%2Fsso%2Foauth2.0%2FcallbackAuthorize

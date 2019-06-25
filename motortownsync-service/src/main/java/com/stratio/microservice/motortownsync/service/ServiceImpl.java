@@ -32,6 +32,9 @@ public class ServiceImpl implements com.stratio.microservice.motortownsync.servi
   @Autowired
   private CsvRowRepository csvrowrepo;
 
+  final static String FINISHED_STATE = "Finished";
+  final static String FAILED_STATE = "Failed";
+
   @Value("${sftphost}")
   private String sftphost;
   @Value("${sftpuser}")
@@ -84,7 +87,7 @@ public class ServiceImpl implements com.stratio.microservice.motortownsync.servi
 
     List<String> rows = repo.getStockCsv();
     String originalFile = repo.getProductOriginalFile();
-    log.info(ECOMMERCE + ": POSTGRES STOCK read " + rows.size() + " rows.");
+    log.info(ECOMMERCE + ": POSTGRES STOCK read " + rows.size() + " rows from MAGENTO STOCK.");
 
     SftpWriter writer = new SftpWriter();
 
@@ -108,7 +111,7 @@ public class ServiceImpl implements com.stratio.microservice.motortownsync.servi
 
     List<String> rows = repo.getProductoCsv();
     String originalFile = repo.getProductOriginalFile();
-    log.info(ECOMMERCE + ": POSTGRES read " + rows.size() + " rows.");
+    log.info(ECOMMERCE + ": POSTGRES read " + rows.size() + " rows from MAGENTO_PRODUCTS.");
 
     SftpWriter writer = new SftpWriter();
 
@@ -134,29 +137,39 @@ public class ServiceImpl implements com.stratio.microservice.motortownsync.servi
 
     List<CsvRow> rows;
     rows = writer.rowsFromSftpZip(sftpuser,sftphost,sftpkey,input.getSftpFile(),ECOMMERCE);
+    String result = "Empty";
 
-    log.info(ECOMMERCE + ": POSTGRES:  start writing to PG this number of entities" + rows.size());
-    csvrowrepo.deleteAllInBatch();
-    csvrowrepo.flush();
-    csvrowrepo.save(rows);
-    log.info(ECOMMERCE + ": POSTGRES:  " + rows.size() +  " csv rows written in PG table. ");
+    if (rows != null) {
+      log.info(ECOMMERCE + ": POSTGRES:  start writing to PG table CSVROWS this number of entities" + rows.size());
+      csvrowrepo.deleteAllInBatch();
+      csvrowrepo.flush();
+      csvrowrepo.save(rows);
+      log.info(ECOMMERCE + ": POSTGRES:  " + rows.size() + " written in PG table CSVROWS. ");
 
-    int currentTry=1;
+      int currentTry = 1;
 
-    String wfResult="";
-    while (currentTry <= spartaretries && ! wfResult.equalsIgnoreCase("Finished")) {
+      String wfResult = "";
+      while (currentTry <= spartaretries && !wfResult.equalsIgnoreCase(FINISHED_STATE)) {
 
-      log.info(ECOMMERCE + ": SPARTA: running " + spartawfname + " v" + spartawfversion + " execution number " + currentTry);
-      wfResult = runWorkflow(spartawfpath,spartawfname,spartawfversion);
-      log.info(ECOMMERCE + ": SPARTA: " + spartawfname + " v" + spartawfversion + " execution number " + currentTry +  " finished with state " + wfResult);
-      currentTry++;
+        log.info(ECOMMERCE + ": SPARTA: running " + spartawfname + " v" + spartawfversion + " execution number " + currentTry);
+        wfResult = runWorkflow(spartawfpath, spartawfname, spartawfversion);
+        log.info(ECOMMERCE + ": SPARTA: " + spartawfname + " v" + spartawfversion + " execution number " + currentTry + " finished with state " + wfResult);
+        currentTry++;
+      }
+
+      if (wfResult.equalsIgnoreCase(FINISHED_STATE)) {
+        result = wfResult;
+        result += " products_file: " + writeProductsToSftp();
+        result += " stock_file: " + writeStockToSftp();
+      }
+      else {
+        result=wfResult;
+      }
+
+
+      log.info(ECOMMERCE + ": reprocess end with result: " + result);
     }
 
-    String result = "";
-    result += " Products file: " +  writeProductsToSftp();
-    result += " Stock file: " +   writeStockToSftp();
-
-    log.info(ECOMMERCE + ": reprocess end with result: " + result);
     return new ServiceOutput(result);
 
   }

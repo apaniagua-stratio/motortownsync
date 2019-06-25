@@ -71,7 +71,7 @@ definitions:
   MicroserviceResponse:
     type: object
     properties:
-      exampleOutputField:
+      resultOutputField:
         type: string
   ErrorResponse:
     type: object

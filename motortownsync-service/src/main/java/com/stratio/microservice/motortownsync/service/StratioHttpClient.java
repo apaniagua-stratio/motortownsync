@@ -395,7 +395,7 @@ public class StratioHttpClient {
 
             HttpResponse execresponse = apiClient.execute(execpost);
             String execResult = EntityUtils.toString(execresponse.getEntity());
-            log.info("MOTORTOWN execute /run response=" + execResult);
+            log.info("MOTORTOWN execute /run response=" + StringUtils.substring(execResult,0,120));
 
             String lastState = parseWfState(execResult);
 
@@ -407,7 +407,7 @@ public class StratioHttpClient {
                 HttpResponse execresponse2 = apiClient.execute(execpost);
                 execResult = EntityUtils.toString(execresponse2.getEntity());
                 lastState = parseWfState(execResult);
-                log.info("MOTORTOWN execute /run response=" + execResult);
+                log.info("MOTORTOWN execute /run response=" + StringUtils.substring(execResult,0,120));
                 c++;
                 if (c > 9) {
                     lastState=FAILED_STATE;

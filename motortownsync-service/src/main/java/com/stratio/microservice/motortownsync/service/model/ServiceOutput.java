@@ -12,6 +12,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ServiceOutput {
 
-  private String exampleOutputField;
+  private String resultOutputField;
 
 }

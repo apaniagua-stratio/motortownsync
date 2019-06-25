@@ -31,8 +31,6 @@ public class CsvRowRepositoryTest {
 
         int i = repository.save(rows).size();
 
-        verify(repository.save(rows));
-
         assertEquals(i,0);
     }
 
