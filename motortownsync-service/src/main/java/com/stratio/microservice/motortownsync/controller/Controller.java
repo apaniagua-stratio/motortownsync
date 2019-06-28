@@ -2,10 +2,13 @@ package com.stratio.microservice.motortownsync.controller;
 
 import brave.Tracer;
 
+import com.stratio.microservice.motortownsync.entity.CsvRow;
 import com.stratio.microservice.motortownsync.generated.rest.api.POSTEndpointOfTheMicroserviceApi;
 import com.stratio.microservice.motortownsync.generated.rest.model.MicroserviceRequest;
 import com.stratio.microservice.motortownsync.generated.rest.model.MicroserviceResponse;
+import com.stratio.microservice.motortownsync.repository.CsvRowRepository;
 import com.stratio.microservice.motortownsync.service.Service;
+import com.stratio.microservice.motortownsync.service.SftpWriter;
 import com.stratio.microservice.motortownsync.service.mapper.ServiceRequestMapper;
 import com.stratio.microservice.motortownsync.service.mapper.ServiceResponseMapper;
 import com.stratio.microservice.motortownsync.service.model.ServiceOutput;
@@ -24,6 +27,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import io.swagger.annotations.ApiParam;
 
+import java.util.List;
+
 
 @Slf4j
 @RestController
@@ -41,6 +46,7 @@ public class Controller implements POSTEndpointOfTheMicroserviceApi {
   @Value("${service.name}")
   private String serviceId;
 
+
   @Autowired
   public Controller(Tracer tracer,
       Service service,
@@ -52,6 +58,7 @@ public class Controller implements POSTEndpointOfTheMicroserviceApi {
     this.responseMapper = responseMapper;
 
     log.info("MOTORTOWN MOTORTOWNSYNC DEV");
+
 
   }
 
