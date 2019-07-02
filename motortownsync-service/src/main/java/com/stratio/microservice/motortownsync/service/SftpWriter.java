@@ -26,11 +26,8 @@ public class SftpWriter {
             Session session = jsch.getSession(user, host, port);
 
 
-            //change before deploy (no passphrase)
-            //String privateKey = "/home/apaniagua/.ssh/id_rsa";
-
             if (sftpkey.equalsIgnoreCase("/home/apaniagua/.ssh/id_rsa")) {
-                jsch.addIdentity(sftpkey,"MailSagApm17");
+                jsch.addIdentity(sftpkey,"LOCAL_KEY_PASSWORD");
             }
             else {
                 jsch.addIdentity(sftpkey);
@@ -81,8 +78,6 @@ public class SftpWriter {
 
         int port=22;
 
-        //String remoteFile="sample.txt";
-
         try
         {
             JSch jsch = new JSch();
@@ -93,7 +88,7 @@ public class SftpWriter {
             //String privateKey = "/home/apaniagua/.ssh/id_rsa";
 
             if (sftpkey.equalsIgnoreCase("/home/apaniagua/.ssh/id_rsa")) {
-                jsch.addIdentity(sftpkey,"MailSagApm17");
+                jsch.addIdentity(sftpkey,"LOCAL_KEY_PASSWORD");
             }
             else {
                 jsch.addIdentity(sftpkey);
@@ -134,8 +129,6 @@ public class SftpWriter {
             }
 
 
-            //log.info(ECOMMERCE + ": SFTP File put.");
-
             stream.close();
             sftpChannel.disconnect();
             session.disconnect();
@@ -144,8 +137,6 @@ public class SftpWriter {
 
             log.info(ECOMMERCE + ": SFTP Channel and session closed.");
 
-
-            //also write differences from last csv written
 
 
             return true;
@@ -199,7 +190,7 @@ public class SftpWriter {
 
 
             if (sftpkey.equalsIgnoreCase("/home/apaniagua/.ssh/id_rsa")) {
-                jsch.addIdentity(sftpkey,"MailSagApm17");
+                jsch.addIdentity(sftpkey,"LOCAL_KEY_PASSWORD");
             }
             else {
                 jsch.addIdentity(sftpkey);
@@ -241,8 +232,6 @@ public class SftpWriter {
             sftpChannel.exit();
             session.disconnect();
 
-            //log.info("MOTORTOWN: SFTP latest file currently is:" + oldestFile);
-            //log.info("MOTORTOWN: SFTP channell and session closed");
 
         }
         catch(JSchException | SftpException e)
@@ -267,7 +256,7 @@ public class SftpWriter {
 
 
             if (sftpkey.equalsIgnoreCase("/home/apaniagua/.ssh/id_rsa")) {
-                jsch.addIdentity(sftpkey,"MailSagApm17");
+                jsch.addIdentity(sftpkey,"LOCAL_KEY_PASSWORD");
             }
             else {
                 jsch.addIdentity(sftpkey);
@@ -338,5 +327,3 @@ public class SftpWriter {
     }
 
 }
-
-

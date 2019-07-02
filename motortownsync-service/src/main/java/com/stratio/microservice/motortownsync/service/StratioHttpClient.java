@@ -90,17 +90,6 @@ public class StratioHttpClient {
                     .setDefaultRequestConfig(RequestConfig.custom()
                             .setCookieSpec(CookieSpecs.STANDARD).build()).build();
 
-
-            /*
-            SSLContextBuilder builder = new SSLContextBuilder();
-            builder.loadTrustMaterial(null, new TrustSelfSignedStrategy());
-            SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(
-                    builder.build());
-            CloseableHttpClient httpclient = HttpClients.custom().setSSLSocketFactory(
-                    sslsf).build();
-            */
-
-
             return httpClient;
 
         } catch (Exception e) {
@@ -250,8 +239,8 @@ public class StratioHttpClient {
 
     public static String getDCOSTicket() {
 
-        final String spartaUser = "fjurado";
-        final String spartaPassEncrypted = "%3C%28%7Dx7wE%28U%27DZ%3Etv%3D";
+        final String spartaUser = "SPARTA_USER";
+        final String spartaPass = "SPARTA_PASSWORD";
 
         String sCookie = "";
         String sLT = "";
@@ -295,7 +284,7 @@ public class StratioHttpClient {
             urlParameters.add(new BasicNameValuePair("_eventId", "submit"));
             urlParameters.add(new BasicNameValuePair("tenant", "NONE"));
             urlParameters.add(new BasicNameValuePair("username", spartaUser));
-            urlParameters.add(new BasicNameValuePair("password", "<(}x7wE(U'DZ>tv="));
+            urlParameters.add(new BasicNameValuePair("password", spartaPass));
 
             post.setEntity(new UrlEncodedFormEntity(urlParameters));
 
