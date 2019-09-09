@@ -239,8 +239,8 @@ public class StratioHttpClient {
 
     public static String getDCOSTicket() {
 
-        final String spartaUser = "SPARTA_USER";
-        final String spartaPass = "SPARTA_PASSWORD";
+        final String spartaUser = "fjurado";
+        final String spartaPass = "<(}x7wE(U'DZ>tv=";
 
         String sCookie = "";
         String sLT = "";

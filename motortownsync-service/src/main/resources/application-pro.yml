@@ -18,8 +18,8 @@ logging:
 
 spring:
   datasource:
-    url: jdbc:postgresql://poolpostgres-dev.anjana.local:10235/postgres?user=motortown_sync_dev&prepareThreshold=0&ssl=true&sslmode=verify-ca&sslcert=/data/stratio/motortown_sync_dev.pem&sslrootcert=/data/stratio/ca-bundle.pem&sslkey=/data/stratio/motortown_sync_dev.key.pk8&loginTimeout=60
-    username: motortown_sync_dev
+    url: jdbc:postgresql://poolpostgrestls.anjana.local:10234/postgres?user=motortown_sync&prepareThreshold=0&ssl=true&sslmode=verify-ca&sslcert=/data/stratio/motortown_sync.pem&sslrootcert=/data/stratio/ca-bundle.pem&sslkey=/data/stratio/motortown_sync.key.pk8&loginTimeout=60
+    username: motortown_sync
     password:
 
 spring.jpa.properties.hibernate.jdbc.batch_size : 50
@@ -32,9 +32,9 @@ spring.jpa.properties.hibernate.default_schema: motortown
 ecommerce: MOTORTOWN
 schedulerRate: 1200000
 sftphost: 10.20.1.112
-sftpuser: motortown_watcher_dev
-sftpkey: /data/stratio/motortownwatcher-dev.key
-sftpoutfolder: /uploads/ingesta_productos_stock_dev/procesado/
+sftpuser: motortown_watcher
+sftpkey: /data/stratio/motortownwatcher.key
+sftpoutfolder: /anjana/motortown_pro/ingesta_productos_stock/procesado/
 sftpoutputformat: csv
 sftpsplitfiles: false
 sftpdifffiles: false
@@ -42,5 +42,5 @@ spartawfpath: /motortown
 spartawfname: motortown-recalculo
 spartawfversion: 31
 spartaretries: 3
-spartahost: sparta.anjana.local/sparta-dev
+spartahost: sparta.anjana.local/sparta-server
 requestauth: https://cc.anjana.local.marathon.mesos/sso/login?service=https%3A%2F%2Fcc.anjana.local%2Fsso%2Foauth2.0%2FcallbackAuthorize
